@@ -4,6 +4,8 @@ import Login from "./components/Login.jsx";
 import Home from "./components/Home.jsx";
 import Detail from "./components/Detail.jsx";
 import Cart from "./components/Cart.jsx";
+import {ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"
 
 function App() {
 
@@ -15,6 +17,7 @@ function App() {
           <Route path="/detail" element={<Detail/>}></Route>
           <Route path="/cart" element={<Cart/>}></Route>
         </Routes>
+          <ToastContainer></ToastContainer>
       </>
   )
 }

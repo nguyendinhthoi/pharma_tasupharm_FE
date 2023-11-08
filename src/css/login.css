@@ -7,7 +7,7 @@
 }
 
 #login {
-  background: url("../../public/images/—Pngtree—wallpaper of a scenic mountain_3137681.jpg")
+  background: url("../../public/images/pawel-czerwinski-SoB70WFVWGU-unsplash.jpg")
     top center / cover no-repeat;
   display: flex;
   justify-content: center;
@@ -117,6 +117,9 @@
   border: 2px solid #fff;
   color: #fff;
 }
+.form-control input:focus{
+  border-bottom: none;
+}
 
 #login #login i {
   position: absolute;
@@ -158,9 +161,6 @@
   background-color: #fff;
   outline: none;
   border: none;
-  border-bottom: 2px solid #adadad;
-  padding: 12px 0px;
-  margin: 8px 0;
   width: 100%;
 }
 
@@ -184,6 +184,7 @@
 #login .form-control {
   width: 100%;
   position: relative;
+  margin-bottom: 15px;
 }
 
 #login .form-control2 {
@@ -224,7 +225,9 @@
 #login .form-control input:focus ~ span {
   width: 100%;
 }
-
+.form-control2{
+  margin-bottom: 15px;
+}
 #login .form-control2 small {
   color: red;
   position: absolute;
@@ -244,7 +247,7 @@
 }
 
 #login .form-control2 input:focus ~ span {
-  width: 100%;
+  /*width: 100%;*/
 }
 
 #login .login-container {
@@ -302,7 +305,7 @@
 }
 
 #login .overlay {
-  background-image: url("../../public/images/—Pngtree—wallpaper of a scenic mountain_3137681.jpg");
+  background-image: url("../../public/images/pawel-czerwinski-SoB70WFVWGU-unsplash.jpg");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: 0 0;
