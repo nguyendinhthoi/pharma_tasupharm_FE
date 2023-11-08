@@ -1,7 +1,37 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import "../css/style.css"
 import {Link} from "react-router-dom";
+import * as loginService from "../service/LoginService.jsx"
+import {BiSolidUserCircle} from "react-icons/bi";
+import {BsFillCartCheckFill, BsSearch} from "react-icons/bs";
+import {Dropdown} from "react-bootstrap";
+import {toast} from "react-toastify";
+
 function Header() {
+    const [userName, setUserName] = useState("");
+    const [userId, setUserId] = useState("");
+    const getUserId = async () => {
+        const jwtToken = loginService.getJwtToken();
+        const user = await loginService.getUserId(jwtToken.sub)
+        setUserId(user.id);
+        try {
+            const res = await loginService.getCustomer(user.id);
+            if (res.status === 200) {
+                setUserName(res.data.name);
+            }
+        } catch (e) {
+            setUserName("Khách vãng lai");
+        }
+    };
+    useEffect(() => {
+        getUserId();
+    }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem("JWT");
+        setUserName(undefined);
+        toast("Đăng xuất thành công");
+    };
     return (
         <>
             <div className="site-wrap">
@@ -9,7 +39,7 @@ function Header() {
                     <div className="search-wrap">
                         <div className="container">
                             <a href="#" className="search-close js-search-close">
-                                <span className="icon-close2" />
+                                <span className="icon-close2"/>
                             </a>
                             <form action="#" method="post">
                                 <input
@@ -21,7 +51,7 @@ function Header() {
                         </div>
                     </div>
                     <div className="container">
-                        <div className="d-flex align-items-center justify-content-between">
+                        <div className="d-flex align-items-center justify-content-between w-auto">
                             <div className="logo">
                                 <div className="site-logo">
                                     <Link className="js-logo-clone" to={"/"}>
@@ -82,19 +112,36 @@ function Header() {
                                 </nav>
                             </div>
                             <div className="icons">
-                                <a href="#" className="icons-btn d-inline-block js-search-open">
-                                    <span className="icon-search" />
+                                <a href="#">
+                                    <BsSearch className="fs-4 me-5"/>
                                 </a>
-                                <Link className="icons-btn d-inline-block bag" to={"/cart"}>
-                                    <span className="icon-shopping-bag" />
-                                    <span className="number">2</span>
+                                <Link className="fs-4 me-5" to={"/cart"}>
+                                    <BsFillCartCheckFill/>
                                 </Link>
-                                <a
-                                    href="#"
-                                    className="site-menu-toggle js-menu-toggle ml-3 d-inline-block d-lg-none"
-                                >
-                                    <span className="icon-menu" />
-                                </a>
+                                <Dropdown className="d-inline-block">
+                                    <Dropdown.Toggle variant={userName ? "info" : ""} id="dropdown-split-basic">
+                                        {userName ? (
+                                            <span>
+                                                {userName}
+                                            </span>
+                                        ) : (
+                                            <Link to="/login">
+                                                <BiSolidUserCircle className="fs-3"/>
+                                            </Link>
+                                        )}
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu>
+                                        {userName && (
+                                            <>
+                                                <Dropdown.Item as={Link} to={`/infoCustomer/${userId}`}>Thông
+                                                    tin</Dropdown.Item>
+                                                <Dropdown.Item onClick={() => {
+                                                    handleLogout();
+                                                }}>Đăng xuất</Dropdown.Item>
+                                            </>
+                                        )}
+                                    </Dropdown.Menu>
+                                </Dropdown>
                             </div>
                         </div>
                     </div>

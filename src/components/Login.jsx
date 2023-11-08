@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
 import "../css/login.css"
-import {Field, Form, Formik} from "formik";
+import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as loginService from "../service/LoginService.jsx"
 import {useNavigate} from "react-router-dom";
 import {toast} from "react-toastify";
+import * as Yup from "yup";
 
 function Login() {
     const [isRightPanelActive, setIsRightPanelActive] = useState(false);
@@ -20,59 +21,111 @@ function Login() {
         userName: "",
         password: ""
     }
+    const initialValuesRegister = {
+        userName: "",
+        password: "",
+        confirmPassword: "",
+        email: ""
+    }
+    const validationSchema = {
+        userName: Yup.string()
+            .required("Không để trống tên tài khoản!")
+            .test('check-userName', 'Không để trống tên tài khoản!', (value) => value.trim().length !== 0)
+            .min(3, "Tên đăng nhập phải lơớn hơn hoặc bằng 3 ký tự!")
+            .max(50, "Tên đăng nhập phải ít hơn hoặc bằng 50 ký tự!"),
+        password: Yup.string()
+            .required("Không được để trống mật khẩu!")
+            .test('check-userName', "Không để trống mật khẩu!", (value) => value.trim().length !== 0)
+            .min(3, "Mật khẩu ít nhất 3 ký tự!")
+            .max(50, "Mật khẩu phải ít hơn hoặc bằng 50 ký tự!"),
+        confirmPassword: Yup.string()
+            .required("Không được để trống mật khẩu!")
+            .test('check-userName', "Không để trống mật khẩu", (value) => value.trim().length !== 0)
+            .min(3, "Mật khẩu ít nhất 3 ký tự!")
+            .max(50, "Mật khẩu ít hơn hoặc bằng 50 ký tự!")
+            .oneOf([Yup.ref('password'), null], "Mật khẩu không trùng khớp!"),
+        email: Yup.string()
+            .required("Vui lòng nhập email.")
+    }
+
     const handleLogin = async (values) => {
-        const res = await loginService.login(values);
-        loginService.addJwtTokenToLocalStorage(res.data.jwtToken);
-        const tempURL = localStorage.getItem("tempURL");
-        localStorage.removeItem("tempURL");
-        if (res.status === 200) {
-            if (tempURL) {
-                navigate(tempURL);
+        try {
+            const res = await loginService.login(values);
+            loginService.addJwtTokenToLocalStorage(res.data.jwtToken);
+            const tempURL = localStorage.getItem("tempURL");
+            localStorage.removeItem("tempURL");
+            if (res.status === 200) {
+                if (tempURL) {
+                    navigate(tempURL);
+                } else {
+                    navigate("/")
+                }
+                toast("Đăng nhập thành công")
             } else {
-                navigate("/")
+                toast.error("Đăng nhập không thành công")
             }
-            toast("Đăng nhập thành công")
-        } else {
-            toast.error("Đăng nhập không thành công")
+        } catch (e) {
+            toast.error("Tên đăng nhập hoặc mật khẩu không đúng")
         }
+    };
+    const handleRegister = async (values) => {
+        const res = await loginService.register(values);
+        try {
+            if (res.status === 200) {
+                toast("Bạn đã tạo mới tài khoản thành công");
+                navigate("/login")
+            } else if (res.status === 406) {
+                toast.error("Tạo tài khoản thất bại");
+            }
+        } catch (e) {
+            toast.error("Tạo tài khoản thất bại");
+        }
+
     };
     return (
         <>
             <div id="login">
                 <div className={`container ${isRightPanelActive ? 'right-panel-active' : ''}`} id="container">
                     <div className="form-container register-container">
-                        <form>
-                            <h1>Register here</h1>
-                            <div className="form-control">
-                                <input type="text" id="username" placeholder="Name"/>
-                                <small id="username-error"/>
-                            </div>
-                            <div className="form-control">
-                                <input type="email" id="email" placeholder="Email"/>
-                                <small id="email-error"/>
-
-                            </div>
-                            <div className="form-control">
-                                <input type="password" id="password" placeholder="Password"/>
-                                <small id="password-error"/>
-
-                            </div>
-                            <button type="submit" value="submit">
-                                Register
-                            </button>
-                            <span>or use your account</span>
-                            <div className="social-container">
-                                <a href="#" className="social">
-                                    <i className="fa-brands fa-facebook-f"/>
-                                </a>
-                                <a href="#" className="social">
-                                    <i className="fa-brands fa-google"/>
-                                </a>
-                                <a href="#" className="social">
-                                    <i className="fa-brands fa-tiktok"/>
-                                </a>
-                            </div>
-                        </form>
+                        <Formik initialValues={initialValuesRegister}
+                                onSubmit={(values) => handleRegister(values)}
+                                validationSchema={Yup.object(validationSchema)}>
+                            <Form>
+                                <h1>Đăng kí</h1>
+                                <div className="form-control">
+                                    <Field type="text" id="username" placeholder="Tên đăng nhập" name="userName"/>
+                                    <ErrorMessage name="userName" component="small" className="text-danger"/>
+                                </div>
+                                <div className="form-control">
+                                    <Field type="password" id="password" placeholder="Mật khẩu" name="password"/>
+                                    <ErrorMessage name="password" component="div" className="text-danger"/>
+                                </div>
+                                <div className="form-control">
+                                    <Field type="password" id="confirmPassword" placeholder="Nhập lại mật khẩu"
+                                           name="confirmPassword"/>
+                                    <ErrorMessage name="confirmPassword" component="div" className="text-danger"/>
+                                </div>
+                                <div className="form-control">
+                                    <Field type="email" id="email" placeholder="Email" name="email"/>
+                                    <ErrorMessage name="email" component="div" className="text-danger"/>
+                                </div>
+                                <button type="submit" value="submit">
+                                    Đăng kí
+                                </button>
+                                <span>Hoặc</span>
+                                <div className="social-container">
+                                    <a href="#" className="social">
+                                        <i className="fa-brands fa-facebook-f"/>
+                                    </a>
+                                    <a href="#" className="social">
+                                        <i className="fa-brands fa-google"/>
+                                    </a>
+                                    <a href="#" className="social">
+                                        <i className="fa-brands fa-tiktok"/>
+                                    </a>
+                                </div>
+                            </Form>
+                        </Formik>
                     </div>
                     <div className="form-container login-container">
                         <Formik initialValues={initialValuesLogin}
@@ -139,7 +192,6 @@ function Login() {
                         </div>
                     </div>
                 </div>
-
             </div>
         </>
     );
