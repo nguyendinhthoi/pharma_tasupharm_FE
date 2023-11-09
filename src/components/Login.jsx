@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import "../css/login.css"
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as loginService from "../service/LoginService.jsx"
@@ -9,6 +9,12 @@ import * as Yup from "yup";
 function Login() {
     const [isRightPanelActive, setIsRightPanelActive] = useState(false);
     const navigate = useNavigate();
+    const [userNameRegister, setUserNameRegister] = useState(null);
+    const [initialValuesLogin, setInitialValuesLogin] = useState(
+        {
+            userName: "",
+            password: ""
+        });
 
     const handleRegisterClick = () => {
         setIsRightPanelActive(true);
@@ -17,10 +23,19 @@ function Login() {
     const handleLoginClick = () => {
         setIsRightPanelActive(false);
     };
-    const initialValuesLogin = {
-        userName: "",
-        password: ""
-    }
+
+    useEffect(() => {
+        if (userNameRegister) {
+            const initialValuesLogin1 = {
+                userName: userNameRegister.userName,
+                password: userNameRegister.password
+            }
+            console.log(initialValuesLogin1.userName)
+            setInitialValuesLogin(initialValuesLogin1)
+        }
+    }, [userNameRegister]);
+
+
     const initialValuesRegister = {
         userName: "",
         password: "",
@@ -69,13 +84,16 @@ function Login() {
         }
     };
     const handleRegister = async (values) => {
-        const res = await loginService.register(values);
+        console.log(values)
         try {
-            if (res.status === 200) {
+            const res = await loginService.register(values);
+            console.log(res)
+            if (res.status === 202) {
                 toast("Bạn đã tạo mới tài khoản thành công");
-                navigate("/login")
-            } else if (res.status === 406) {
-                toast.error("Tạo tài khoản thất bại");
+                setIsRightPanelActive(false);
+                setUserNameRegister(res.data);
+            } else if (res.status === 200) {
+                toast.error(res.data);
             }
         } catch (e) {
             toast.error("Tạo tài khoản thất bại");
@@ -98,32 +116,20 @@ function Login() {
                                 </div>
                                 <div className="form-control">
                                     <Field type="password" id="password" placeholder="Mật khẩu" name="password"/>
-                                    <ErrorMessage name="password" component="div" className="text-danger"/>
+                                    <ErrorMessage name="password" component="small" className="text-danger"/>
                                 </div>
                                 <div className="form-control">
                                     <Field type="password" id="confirmPassword" placeholder="Nhập lại mật khẩu"
                                            name="confirmPassword"/>
-                                    <ErrorMessage name="confirmPassword" component="div" className="text-danger"/>
+                                    <ErrorMessage name="confirmPassword" component="small" className="text-danger"/>
                                 </div>
                                 <div className="form-control">
                                     <Field type="email" id="email" placeholder="Email" name="email"/>
-                                    <ErrorMessage name="email" component="div" className="text-danger"/>
+                                    <ErrorMessage name="email" component="small" className="text-danger"/>
                                 </div>
                                 <button type="submit" value="submit">
                                     Đăng kí
                                 </button>
-                                <span>Hoặc</span>
-                                <div className="social-container">
-                                    <a href="#" className="social">
-                                        <i className="fa-brands fa-facebook-f"/>
-                                    </a>
-                                    <a href="#" className="social">
-                                        <i className="fa-brands fa-google"/>
-                                    </a>
-                                    <a href="#" className="social">
-                                        <i className="fa-brands fa-tiktok"/>
-                                    </a>
-                                </div>
                             </Form>
                         </Formik>
                     </div>

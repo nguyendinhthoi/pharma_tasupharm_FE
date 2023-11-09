@@ -25,7 +25,7 @@ function Header() {
     };
     useEffect(() => {
         getUserId();
-    }, []);
+    }, [userName]);
 
     const handleLogout = () => {
         localStorage.removeItem("JWT");
@@ -119,7 +119,7 @@ function Header() {
                                     <BsFillCartCheckFill/>
                                 </Link>
                                 <Dropdown className="d-inline-block">
-                                    <Dropdown.Toggle variant={userName ? "info" : ""} id="dropdown-split-basic">
+                                    <Dropdown.Toggle variant={userName ? "info" : ""} id="dropdown-basic" className="bg-white border-white">
                                         {userName ? (
                                             <span>
                                                 {userName}

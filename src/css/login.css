@@ -92,7 +92,6 @@
   color: #fff;
   font-size: 15px;
   font-weight: 700;
-  margin: 20px;
   padding: 12px 80px;
   letter-spacing: 1px;
   text-transform: capitalize;
@@ -184,7 +183,7 @@
 #login .form-control {
   width: 100%;
   position: relative;
-  margin-bottom: 15px;
+  margin-bottom: 35px;
 }
 
 #login .form-control2 {
@@ -207,7 +206,7 @@
 #login .form-control small {
   color: red;
   position: absolute;
-  top: 50px;
+  top: 45px;
   left: 0;
   font-size: 12px;
   z-index: 100;
