@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import "../css/login.css"
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as loginService from "../service/LoginService.jsx"
@@ -9,7 +9,6 @@ import * as Yup from "yup";
 function Login() {
     const [isRightPanelActive, setIsRightPanelActive] = useState(false);
     const navigate = useNavigate();
-    const [userNameRegister, setUserNameRegister] = useState(null);
     const [initialValuesLogin, setInitialValuesLogin] = useState(
         {
             userName: "",
@@ -24,16 +23,6 @@ function Login() {
         setIsRightPanelActive(false);
     };
 
-    useEffect(() => {
-        if (userNameRegister) {
-            const initialValuesLogin1 = {
-                userName: userNameRegister.userName,
-                password: userNameRegister.password
-            }
-            console.log(initialValuesLogin1.userName)
-            setInitialValuesLogin(initialValuesLogin1)
-        }
-    }, [userNameRegister]);
 
 
     const initialValuesRegister = {
@@ -83,15 +72,18 @@ function Login() {
             toast.error("Tên đăng nhập hoặc mật khẩu không đúng")
         }
     };
+
     const handleRegister = async (values) => {
-        console.log(values)
         try {
             const res = await loginService.register(values);
-            console.log(res)
             if (res.status === 202) {
                 toast("Bạn đã tạo mới tài khoản thành công");
+                console.log(res.data.userName)
                 setIsRightPanelActive(false);
-                setUserNameRegister(res.data);
+                setInitialValuesLogin({
+                    ...initialValuesLogin,
+                    userName: res.data.userName
+                })
             } else if (res.status === 200) {
                 toast.error(res.data);
             }
@@ -135,7 +127,8 @@ function Login() {
                     </div>
                     <div className="form-container login-container">
                         <Formik initialValues={initialValuesLogin}
-                                onSubmit={(values) => handleLogin(values)}>
+                                onSubmit={(values) => handleLogin(values)}
+                                enableReinitialize>
                             <Form className="form-lg">
                                 <h1>Đăng nhập</h1>
                                 <div className="form-control">

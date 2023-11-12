@@ -2,20 +2,27 @@ import React, {useEffect, useState} from 'react';
 import "../css/style.css"
 import {Link} from "react-router-dom";
 import * as loginService from "../service/LoginService.jsx"
+import * as productService from "../service/ProductService.jsx"
 import {BiSolidUserCircle} from "react-icons/bi";
 import {BsFillCartCheckFill, BsSearch} from "react-icons/bs";
 import {Dropdown} from "react-bootstrap";
 import {toast} from "react-toastify";
 
+
+
 function Header() {
     const [userName, setUserName] = useState("");
     const [userId, setUserId] = useState("");
+    const [categories, setCategories] = useState([]);
     const getUserId = async () => {
         const jwtToken = loginService.getJwtToken();
+        console.log(jwtToken)
         const user = await loginService.getUserId(jwtToken.sub)
+        console.log(user)
         setUserId(user.id);
         try {
             const res = await loginService.getCustomer(user.id);
+            console.log(res)
             if (res.status === 200) {
                 setUserName(res.data.name);
             }
@@ -23,8 +30,17 @@ function Header() {
             setUserName("Khách vãng lai");
         }
     };
+    const getCategories = async () => {
+        try {
+            const res = await productService.getAllCategories();
+            setCategories(res);
+        } catch (e) {
+            console.log("Không tìm thấy")
+        }
+    };
     useEffect(() => {
         getUserId();
+        getCategories();
     }, [userName]);
 
     const handleLogout = () => {
@@ -55,7 +71,8 @@ function Header() {
                             <div className="logo">
                                 <div className="site-logo">
                                     <Link className="js-logo-clone" to={"/"}>
-                                        Pharma
+                                        <img style={{width: "200px", height: "auto"}} src="../../public/images/logo.jpg"
+                                             alt="logo"/>
                                     </Link>
                                 </div>
                             </div>
@@ -66,47 +83,21 @@ function Header() {
                                 >
                                     <ul className="site-menu js-clone-nav d-none d-lg-block">
                                         <li className="active">
-                                            <Link to={"/"}>Home</Link>
+                                            <Link to={"/"}>Trang chủ</Link>
                                         </li>
                                         <li>
-                                            <a href="shop.html">Store</a>
+                                            <a href="shop.html">Cửa hàng</a>
                                         </li>
                                         <li className="has-children">
-                                            <a href="#">Dropdown</a>
+                                            <a href="#">Danh mục</a>
                                             <ul className="dropdown">
-                                                <li>
-                                                    <a href="#">Supplements</a>
-                                                </li>
-                                                <li className="has-children">
-                                                    <a href="#">Vitamins</a>
-                                                    <ul className="dropdown">
-                                                        <li>
-                                                            <a href="#">Supplements</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="#">Vitamins</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="#">Diet &amp; Nutrition</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="#">Tea &amp; Coffee</a>
-                                                        </li>
-                                                    </ul>
-                                                </li>
-                                                <li>
-                                                    <a href="#">Diet &amp; Nutrition</a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">Tea &amp; Coffee</a>
-                                                </li>
+                                                {categories.map((category, index) =>
+                                                    <li className="mb-4" key={index}>{category.name}</li>
+                                                )}
                                             </ul>
                                         </li>
                                         <li>
-                                            <a href="about.html">About</a>
-                                        </li>
-                                        <li>
-                                            <a href="contact.html">Contact</a>
+                                            <a href="about.html">ABOUT US</a>
                                         </li>
                                     </ul>
                                 </nav>
@@ -119,7 +110,8 @@ function Header() {
                                     <BsFillCartCheckFill/>
                                 </Link>
                                 <Dropdown className="d-inline-block">
-                                    <Dropdown.Toggle variant={userName ? "info" : ""} id="dropdown-basic" className="bg-white border-white">
+                                    <Dropdown.Toggle variant={userName ? "info" : ""} id="dropdown-basic"
+                                                     className="bg-white border-white">
                                         {userName ? (
                                             <span>
                                                 {userName}
