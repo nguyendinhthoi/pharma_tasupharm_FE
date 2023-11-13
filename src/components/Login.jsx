@@ -55,6 +55,7 @@ function Login() {
     const handleLogin = async (values) => {
         try {
             const res = await loginService.login(values);
+            console.log(res)
             loginService.addJwtTokenToLocalStorage(res.data.jwtToken);
             const tempURL = localStorage.getItem("tempURL");
             localStorage.removeItem("tempURL");
@@ -75,7 +76,9 @@ function Login() {
 
     const handleRegister = async (values) => {
         try {
+            console.log(values)
             const res = await loginService.register(values);
+            console.log(res)
             if (res.status === 202) {
                 toast("Bạn đã tạo mới tài khoản thành công");
                 console.log(res.data.userName)

@@ -14,6 +14,8 @@ function Header() {
     const [userName, setUserName] = useState("");
     const [userId, setUserId] = useState("");
     const [categories, setCategories] = useState([]);
+    const [isSearchActive, setIsSearchActive] = useState(false);
+
     const getUserId = async () => {
         const jwtToken = loginService.getJwtToken();
         console.log(jwtToken)
@@ -48,22 +50,26 @@ function Header() {
         setUserName(undefined);
         toast("Đăng xuất thành công");
     };
+    const openSearch = () => {
+        setIsSearchActive(true);
+    };
+    const closeSearch = () => {
+        setIsSearchActive(false);
+    };
     return (
         <>
             <div className="site-wrap">
                 <div className="site-navbar py-2">
-                    <div className="search-wrap">
+                    <div className={`search-wrap ${isSearchActive ? 'active' : ''}`}>
                         <div className="container">
-                            <a href="#" className="search-close js-search-close">
+                            <a href="#" className="search-close js-search-close" onClick={closeSearch}>
                                 <span className="icon-close2"/>
                             </a>
-                            <form action="#" method="post">
                                 <input
                                     type="text"
                                     className="form-control"
-                                    placeholder="Search keyword and hit enter..."
+                                    placeholder="Tìm kiếm từ khóa bạn muốn ở đây ..."
                                 />
-                            </form>
                         </div>
                     </div>
                     <div className="container">
@@ -104,7 +110,7 @@ function Header() {
                             </div>
                             <div className="icons">
                                 <a href="#">
-                                    <BsSearch className="fs-4 me-5"/>
+                                    <BsSearch className="fs-4 me-5" onClick={openSearch}/>
                                 </a>
                                 <Link className="fs-4 me-5" to={"/cart"}>
                                     <BsFillCartCheckFill/>

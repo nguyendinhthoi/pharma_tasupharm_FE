@@ -11,6 +11,7 @@ import "../css/owl.theme.default.min.css"
 import "../css/jquery-ui.css"
 import "../css/magnific-popup.css"
 import "../css/aos.css"
+import "../css/style.css"
 import {Link} from "react-router-dom";
 import * as productService from "../service/ProductService.jsx"
 
@@ -20,6 +21,7 @@ function Home() {
     const getAllBestSellers = async () => {
         try {
             const res = await productService.getBestSellers();
+            console.error(res)
             setBestSellers(res);
         } catch (e) {
             console.log("Không có sản phẩm")
@@ -28,6 +30,7 @@ function Home() {
     const getAllNewProducts = async () => {
         try {
             const res = await productService.getAllNewProduct();
+            console.error(res)
             setNewProducts(res);
         } catch (e) {
             console.log("Không có sản phẩm")
@@ -126,11 +129,17 @@ function Home() {
                                             <img src={item.image} alt="Image" className="img-fluid"/>
                                         </Link>
                                         <h3 className="text-dark">
-                                            <Link to={`/detail/${item.idCategory}/${item.id}`}>{item.name}</Link>
+                                            <Link to={`/detail/${item.idCategory}/${item.id}`} id="card-title">{item.name}</Link>
                                         </h3>
                                         <p className="price">
-                                            <del>95.00</del>
-                                            &mdash;
+                                            {item.priceSale != null &&
+                                                <>
+                                                    <del className="mx-2">{item.priceSale.toLocaleString('vi-VN', {
+                                                        style: 'currency',
+                                                        currency: 'VND'
+                                                    })}</del>
+                                                </>
+                                            }
                                             {item.price.toLocaleString('vi-VN', {
                                                 style: 'currency',
                                                 currency: 'VND'
@@ -180,8 +189,17 @@ function Home() {
                                                                  className="img-fluid"/>
                                                         </div>
                                                         <div className="text-center mb-5">
-                                                            <h4>{item.name}</h4>
-                                                            <span>{item.price.toLocaleString('vi-VN', {
+                                                            <h4 id="card-title">{item.name}</h4>
+                                                            <span>
+                                                                 {item.priceSale != null &&
+                                                                     <>
+                                                                         <del className="mx-2">{item.priceSale.toLocaleString('vi-VN', {
+                                                                             style: 'currency',
+                                                                             currency: 'VND'
+                                                                         })}</del>
+                                                                     </>
+                                                                 }
+                                                                {item.price.toLocaleString('vi-VN', {
                                                                 style: 'currency',
                                                                 currency: 'VND'
                                                             })}</span>
