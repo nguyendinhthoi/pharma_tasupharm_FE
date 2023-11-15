@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import "../css/style.css"
-import {Link} from "react-router-dom";
+// import "../css/style.css"
+import {Link, useNavigate} from "react-router-dom";
 import * as loginService from "../service/LoginService.jsx"
 import * as productService from "../service/ProductService.jsx"
 import {BiSolidUserCircle} from "react-icons/bi";
@@ -15,11 +15,13 @@ function Header() {
     const [userId, setUserId] = useState("");
     const [categories, setCategories] = useState([]);
     const [isSearchActive, setIsSearchActive] = useState(false);
+    const [searchName, setSearchName] = useState("");
+    const navigate = useNavigate();
 
     const getUserId = async () => {
         const jwtToken = loginService.getJwtToken();
         console.log(jwtToken)
-        const user = await loginService.getUserId(jwtToken.sub)
+        const user = await loginService.getUser(jwtToken.sub)
         console.log(user)
         setUserId(user.id);
         try {
@@ -30,6 +32,19 @@ function Header() {
             }
         } catch (e) {
             setUserName("Khách vãng lai");
+        }
+    };
+    const getCart = async () => {
+        if (userId){
+            const res = await productService.getAllCart(userId);
+            if (res.status === 200){
+                navigate("/cart");
+            }else {
+                console.log("Không lấy được dữ liệu")
+            }
+        }else {
+            navigate("/login")
+            toast("Bạn phải đăng nhập trước khi vào giỏ hàng")
         }
     };
     const getCategories = async () => {
@@ -56,6 +71,14 @@ function Header() {
     const closeSearch = () => {
         setIsSearchActive(false);
     };
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter' && searchName.trim() !== ''){
+           searchName && navigate(`/listSearchHome/${searchName.trim()}`)
+        }else if (event.key === 'Escape'){
+            setIsSearchActive(false)
+        }
+    };
+
     return (
         <>
             <div className="site-wrap">
@@ -65,11 +88,13 @@ function Header() {
                             <a href="#" className="search-close js-search-close" onClick={closeSearch}>
                                 <span className="icon-close2"/>
                             </a>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Tìm kiếm từ khóa bạn muốn ở đây ..."
-                                />
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Tìm kiếm từ khóa bạn muốn ở đây ..."
+                                        onChange={(values)=> setSearchName(values.target.value)}
+                                        onKeyDown={handleKeyPress}
+                                    />
                         </div>
                     </div>
                     <div className="container">
@@ -112,9 +137,9 @@ function Header() {
                                 <a href="#">
                                     <BsSearch className="fs-4 me-5" onClick={openSearch}/>
                                 </a>
-                                <Link className="fs-4 me-5" to={"/cart"}>
+                                <a className="fs-4 me-5" role="button" onClick={getCart}>
                                     <BsFillCartCheckFill/>
-                                </Link>
+                                </a>
                                 <Dropdown className="d-inline-block">
                                     <Dropdown.Toggle variant={userName ? "info" : ""} id="dropdown-basic"
                                                      className="bg-white border-white">

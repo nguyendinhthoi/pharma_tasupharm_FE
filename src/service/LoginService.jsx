@@ -14,7 +14,7 @@ export const getCustomer = async (idUser) => {
 };
 
 
-export const getUserId = async (sub) => {
+export const getUser = async (sub) => {
     const res = await axios.get(`http://localhost:8080/user/getUser/${sub}`)
     return res.data;
 };

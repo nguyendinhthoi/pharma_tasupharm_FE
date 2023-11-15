@@ -19,6 +19,48 @@ function Footer() {
     }, []);
     return (
         <>
+            <div
+                className="site-section bg-secondary bg-image"
+                style={{backgroundImage: 'url("../../public/images/bg_2.jpg")'}}
+            >
+                <div className="container">
+                    <div className="row align-items-stretch">
+                        <div className="col-lg-6 mb-5 mb-lg-0">
+                            <a
+                                href="https://nhathuocviet.vn/tin-tuc/thuoc-bo-gan-tot-nhat-hien-nay.html"
+                                className="banner-1 h-100 d-flex"
+                                target="_blank"
+                                style={{backgroundImage: 'url("../../public/images/bg_1.jpg")'}} rel="noreferrer"
+                            >
+                                <div className="banner-1-inner align-self-center">
+                                    <h2>Sản phẩm của chúng tôi</h2>
+                                    <p>
+                                        Hãy cùng khám phá và tìm hiểu thêm về những
+                                        ưu điểm và đặc điểm độc đáo mà sản phẩm mang lại!
+                                    </p>
+                                </div>
+                            </a>
+                        </div>
+                        <div className="col-lg-6 mb-5 mb-lg-0">
+                            <a
+                                href="https://vietnamcleanroom.com/vi/post/top-10-cong-ty-duoc-pham-uy-tin-viet-nam-nam-2021-589.htm"
+                                className="banner-1 h-100 d-flex"
+                                target="_blank"
+                                style={{backgroundImage: 'url("../../public/images/bg_2.jpg")'}} rel="noreferrer"
+                            >
+                                <div className="banner-1-inner ms-auto  align-self-center">
+                                    <h2>Đánh giá bởi chuyên gia</h2>
+                                    <p>
+                                        Chuyên gia của chúng tôi đã dành thời gian nghiên cứu
+                                        sâu rộng để mang đến cho bạn cái nhìn sâu sắc và chi tiết nhất về trải
+                                        nghiệm sử dụng sản phẩm này.
+                                    </p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <footer className="site-footer">
                 <div className="container">
                     <div className="row">

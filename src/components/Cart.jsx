@@ -1,19 +1,41 @@
-import React from 'react';
-import Header from "./Header.jsx";
-import Footer from "./Footer.jsx";
-import {Link} from "react-router-dom";
+import React, {useEffect, useState} from 'react';
+
+import {Link, useNavigate} from "react-router-dom";
+import * as productService from "../service/ProductService.jsx"
+import * as loginService from "../service/LoginService.jsx"
+import {toast} from "react-toastify";
 
 function Cart() {
+    const navigate = useNavigate();
+    const [products, setProducts] = useState([]);
+    const getAllCart = async () => {
+        const jwtToken = loginService.getJwtToken();
+        if (!jwtToken){
+            navigate("/login")
+            toast("Bạn phải đăng nhập trước khi vào giỏ hàng")
+        }else {
+            const user = await loginService.getUser(jwtToken.sub)
+            const res = await productService.getAllCart(user.id);
+            if (res.status === 200){
+                setProducts(res.data);
+            }else {
+                console.log("Lấy dữ liệu thất bại")
+            }
+        }
+    };
+    useEffect(() => {
+        getAllCart();
+    }, []);
+
     return (
         <>
-            <Header></Header>
             <>
                 <div className="bg-light py-3">
                     <div className="container">
                         <div className="row">
                             <div className="col-md-12 mb-0">
-                                <Link to={"/"}>Home</Link> <span className="mx-2 mb-0">/</span>
-                                <strong className="text-black">Cart</strong>
+                                <Link to={"/"}>Trang chủ</Link> <span className="mx-2 mb-0">/</span>
+                                <strong className="text-black">Giỏ hàng</strong>
                             </div>
                         </div>
                     </div>
@@ -26,109 +48,66 @@ function Cart() {
                                     <table className="table table-bordered">
                                         <thead>
                                         <tr>
-                                            <th className="product-thumbnail">Image</th>
-                                            <th className="product-name">Product</th>
-                                            <th className="product-price">Price</th>
-                                            <th className="product-quantity">Quantity</th>
-                                            <th className="product-total">Total</th>
-                                            <th className="product-remove">Remove</th>
+                                            <th className="product-thumbnail">Hình ảnh</th>
+                                            <th className="product-name">Tên sản phẩm</th>
+                                            <th className="product-price">Giá tiền</th>
+                                            <th className="product-quantity">Số lượng</th>
+                                            <th className="product-total">Đơn giá</th>
+                                            <th className="product-remove">Xóa</th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr>
-                                            <td className="product-thumbnail">
-                                                <img
-                                                    src="../../public/../../public/images/product_02.png"
-                                                    alt="Image"
-                                                    className="img-fluid"
-                                                />
-                                            </td>
-                                            <td className="product-name">
-                                                <h2 className="h5 text-black">Ibuprofen</h2>
-                                            </td>
-                                            <td>$55.00</td>
-                                            <td>
-                                                <div className="input-group mb-3" style={{ maxWidth: 120 }}>
-                                                    <div className="input-group-prepend">
-                                                        <button
-                                                            className="btn btn-outline-primary js-btn-minus"
-                                                            type="button"
-                                                        >
-                                                            −
-                                                        </button>
-                                                    </div>
-                                                    <input
-                                                        type="text"
-                                                        className="form-control text-center"
-                                                        defaultValue={1}
-                                                        placeholder=""
-                                                        aria-label="Example text with button addon"
-                                                        aria-describedby="button-addon1"
+                                        {products.map((item, index) => (
+                                            <tr key={index}>
+                                                <td className="product-thumbnail">
+                                                    <img
+                                                        src={item.image}
+                                                        alt="Image"
+                                                        className="img-fluid"
                                                     />
-                                                    <div className="input-group-append">
-                                                        <button
-                                                            className="btn btn-outline-primary js-btn-plus"
-                                                            type="button"
-                                                        >
-                                                            +
-                                                        </button>
+                                                </td>
+                                                <td className="product-name">
+                                                    <h2 className="h5 text-black">{item.name}</h2>
+                                                </td>
+                                                <td>{item.price}</td>
+                                                <td>
+                                                    <div className="input-group mb-3" style={{ maxWidth: 120 }}>
+                                                        <div className="input-group-prepend">
+                                                            <button
+                                                                className="btn btn-outline-primary js-btn-minus"
+                                                                type="button"
+                                                            >
+                                                                −
+                                                            </button>
+                                                        </div>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control text-center"
+                                                            defaultValue={item.quantityOrder}
+                                                            placeholder=""
+                                                            aria-label="Example text with button addon"
+                                                            aria-describedby="button-addon1"
+                                                        />
+                                                        <div className="input-group-append">
+                                                            <button
+                                                                className="btn btn-outline-primary js-btn-plus"
+                                                                type="button"
+                                                            >
+                                                                +
+                                                            </button>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </td>
-                                            <td>$49.00</td>
-                                            <td>
-                                                <a href="#" className="btn btn-primary height-auto btn-sm">
-                                                    X
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className="product-thumbnail">
-                                                <img
-                                                    src="../../public/../../public/images/product_01.png"
-                                                    alt="Image"
-                                                    className="img-fluid"
-                                                />
-                                            </td>
-                                            <td className="product-name">
-                                                <h2 className="h5 text-black">Bioderma</h2>
-                                            </td>
-                                            <td>$49.00</td>
-                                            <td>
-                                                <div className="input-group mb-3" style={{ maxWidth: 120 }}>
-                                                    <div className="input-group-prepend">
-                                                        <button
-                                                            className="btn btn-outline-primary js-btn-minus"
-                                                            type="button"
-                                                        >
-                                                            −
-                                                        </button>
-                                                    </div>
-                                                    <input
-                                                        type="text"
-                                                        className="form-control text-center"
-                                                        defaultValue={1}
-                                                        placeholder=""
-                                                        aria-label="Example text with button addon"
-                                                        aria-describedby="button-addon1"
-                                                    />
-                                                    <div className="input-group-append">
-                                                        <button
-                                                            className="btn btn-outline-primary js-btn-plus"
-                                                            type="button"
-                                                        >
-                                                            +
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>$49.00</td>
-                                            <td>
-                                                <a href="#" className="btn btn-primary height-auto btn-sm">
-                                                    X
-                                                </a>
-                                            </td>
-                                        </tr>
+                                                </td>
+                                                <td>$49.00</td>
+                                                <td>
+                                                    <a href="#" className="btn btn-primary height-auto btn-sm">
+                                                        X
+                                                    </a>
+                                                </td>
+                                            </tr>
+
+
+                                        ))}
                                         </tbody>
                                     </table>
                                 </div>
@@ -198,7 +177,6 @@ function Cart() {
                                             <div className="col-md-12">
                                                 <button
                                                     className="btn btn-primary btn-lg btn-block"
-                                                    onclick="window.location='checkout.html'"
                                                 >
                                                     Proceed To Checkout
                                                 </button>
@@ -210,48 +188,7 @@ function Cart() {
                         </div>
                     </div>
                 </div>
-                <div
-                    className="site-section bg-secondary bg-image"
-                    style={{ backgroundImage: 'url("../../public/../../public/images/bg_2.jpg")' }}
-                >
-                    <div className="container">
-                        <div className="row align-items-stretch">
-                            <div className="col-lg-6 mb-5 mb-lg-0">
-                                <a
-                                    href="#"
-                                    className="banner-1 h-100 d-flex"
-                                    style={{ backgroundImage: 'url("../../public/../../public/images/bg_1.jpg")' }}
-                                >
-                                    <div className="banner-1-inner align-self-center">
-                                        <h2>Pharma Products</h2>
-                                        <p>
-                                            Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                                            Molestiae ex ad minus rem odio voluptatem.
-                                        </p>
-                                    </div>
-                                </a>
-                            </div>
-                            <div className="col-lg-6 mb-5 mb-lg-0">
-                                <a
-                                    href="#"
-                                    className="banner-1 h-100 d-flex"
-                                    style={{ backgroundImage: 'url("../../public/../../public/images/bg_2.jpg")' }}
-                                >
-                                    <div className="banner-1-inner ml-auto  align-self-center">
-                                        <h2>Rated by Experts</h2>
-                                        <p>
-                                            Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                                            Molestiae ex ad minus rem odio voluptatem.
-                                        </p>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </>
-
-            <Footer></Footer>
         </>
     );
 }

@@ -1123,9 +1123,48 @@ a {
 
 .custom-table td {
   color: #000; }
+
 #card-title{
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+.t-icons-overlay {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  left: 50%;
+  transform: translate(-50%,-50%)
+}
+
+.t-icon-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 10px;
+  color: #1a5276; /* Dark blue color */
+  width: 50px;
+  height: 50px;
+  font-size: 24px; /* Change the font size as needed */
+  background-color: #f8f9fa; /* Light shade of white */
+  padding: 10px; /* Adjust padding as needed */
+  border-radius: 50%; /* Make it a circle */
+  transition: background-color 0.3s ease-in-out; /* Add transition effect */
+}
+
+.t-icon-link:hover {
+  text-decoration: none;
+  background-color: #a3c4bc;
+}
+
+.t-item:hover .t-icons-overlay {
+  opacity: 1;
+}
+
+.t-item:hover img {
+  filter: brightness(70%); /* Adjust the brightness as needed */
 }

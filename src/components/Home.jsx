@@ -6,18 +6,16 @@ import 'swiper/css/effect-coverflow';
 import 'swiper/css/pagination';
 import {Swiper, SwiperSlide} from "swiper/react";
 import {Autoplay, FreeMode, Pagination} from "swiper/modules";
-import "../css/owl.carousel.min.css"
-import "../css/owl.theme.default.min.css"
-import "../css/jquery-ui.css"
-import "../css/magnific-popup.css"
-import "../css/aos.css"
-import "../css/style.css"
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import * as productService from "../service/ProductService.jsx"
+import * as loginService from "../service/LoginService.jsx"
+import {BsCart, BsEye} from "react-icons/bs";
+import {toast} from "react-toastify";
 
 function Home() {
     const [bestSellers, setBestSellers] = useState([])
     const [newProducts, setNewProducts] = useState([])
+    const navigate = useNavigate();
     const getAllBestSellers = async () => {
         try {
             const res = await productService.getBestSellers();
@@ -40,9 +38,23 @@ function Home() {
         getAllBestSellers();
         getAllNewProducts()
     }, []);
+    const getIntoCart = async (idProduct) => {
+        console.log(idProduct)
+        const jwtToken = loginService.getJwtToken();
+        console.log(jwtToken)
+        if (!jwtToken) {
+            navigate("/login")
+            toast("Bạn phải đăng nhập trước khi thêm vào giỏ hàng")
+        }else {
+            const user = await loginService.getUser(jwtToken.sub);
+            const res = await productService.addToCart(idProduct,user.id);
+            if (res.status === 200){
+                console.log(res)
+            }
+        }
+    };
     return (
         <>
-            <Header></Header>
             <>
                 <div
                     className="site-blocks-cover"
@@ -121,39 +133,52 @@ function Home() {
                             </div>
                         </div>
                         <div className="row">
-                            {
-                                bestSellers.map((item, index) =>
-                                    <div key={index} className="col-sm-6 col-lg-4 text-center item mb-4">
-                                        <Link to={`/detail/${item.idCategory}/${item.id}`}>
-                                            {" "}
-                                            <img src={item.image} alt="Image" className="img-fluid"/>
-                                        </Link>
+                            {bestSellers.map((item, index) => (
+                                <div key={index} className="col-sm-6 col-lg-4 text-center t-item mb-4">
+                                        <div className="position-relative">
+                                            <img src={item.image} alt="Image" className="img-fluid" />
+                                            <div className="t-icons-overlay">
+                                                <Link to={`/detail/${item.idCategory}/${item.id}`} className="t-icon-link">
+                                                    <BsEye className="t-icon" />
+                                                </Link>
+                                                <a className="t-icon-link" role="button" onClick={()=> getIntoCart(item.id)}>
+                                                    <BsCart className="t-icon"/>
+                                                </a>
+                                            </div>
+                                        </div>
                                         <h3 className="text-dark">
-                                            <Link to={`/detail/${item.idCategory}/${item.id}`} id="card-title">{item.name}</Link>
+                                            <p id="card-title" title={item.name}>{item.name}</p>
                                         </h3>
                                         <p className="price">
-                                            {item.priceSale != null &&
+                                            {item.priceSale != null ? (
                                                 <>
-                                                    <del className="mx-2">{item.priceSale.toLocaleString('vi-VN', {
+                                                    <del className="mx-2">{item.price.toLocaleString('vi-VN', {
                                                         style: 'currency',
                                                         currency: 'VND'
                                                     })}</del>
+                                                    {item.priceSale.toLocaleString('vi-VN', {
+                                                        style: 'currency',
+                                                        currency: 'VND'
+                                                    })}
                                                 </>
+                                            ):(
+                                                <>
+                                                    {item.price.toLocaleString('vi-VN', {
+                                                        style: 'currency',
+                                                        currency: 'VND'
+                                                    })}
+                                                </>
+                                            )
                                             }
-                                            {item.price.toLocaleString('vi-VN', {
-                                                style: 'currency',
-                                                currency: 'VND'
-                                            })}
                                         </p>
-                                    </div>
-                                )
-                            }
+                                </div>
+                            ))}
                         </div>
                         <div className="row mt-5">
                             <div className="col-12 text-center">
-                                <a href="shop.html" className="btn btn-primary px-4 py-3">
+                                <Link  className="btn btn-primary px-4 py-3" to={"/listProduct"}>
                                     Tất cả sản phẩm
-                                </a>
+                                </Link>
                             </div>
                         </div>
                     </div>
@@ -182,30 +207,47 @@ function Home() {
                                     >
                                         {
                                             newProducts.map((item, index) =>
-                                                <SwiperSlide key={index}>
+                                                <SwiperSlide key={index} className="t-item">
                                                     <div>
-                                                        <div>
-                                                            <img src={item.image} alt="Image"
-                                                                 className="img-fluid"/>
+                                                        <div className="position-relative">
+                                                            <img src={item.image} alt="Image" className="img-fluid" />
+                                                            <div className="t-icons-overlay">
+                                                                <Link to={`/detail/${item.idCategory}/${item.id}`} className="t-icon-link">
+                                                                    <BsEye className="t-icon" />
+                                                                </Link>
+                                                                <Link to="/cart" className="t-icon-link">
+                                                                    <BsCart className="t-icon" />
+                                                                </Link>
+                                                            </div>
                                                         </div>
                                                         <div className="text-center mb-5">
-                                                            <h4 id="card-title">{item.name}</h4>
+                                                            <h4 id="card-title" title={item.name}>{item.name}</h4>
                                                             <span>
-                                                                 {item.priceSale != null &&
-                                                                     <>
-                                                                         <del className="mx-2">{item.priceSale.toLocaleString('vi-VN', {
-                                                                             style: 'currency',
-                                                                             currency: 'VND'
-                                                                         })}</del>
-                                                                     </>
-                                                                 }
-                                                                {item.price.toLocaleString('vi-VN', {
-                                                                style: 'currency',
-                                                                currency: 'VND'
-                                                            })}</span>
+                                                               {item.priceSale != null ? (
+                                                                   <>
+                                                                       <del className="mx-2">{item.price.toLocaleString('vi-VN', {
+                                                                           style: 'currency',
+                                                                           currency: 'VND'
+                                                                       })}</del>
+                                                                       {item.priceSale.toLocaleString('vi-VN', {
+                                                                           style: 'currency',
+                                                                           currency: 'VND'
+                                                                       })}
+                                                                   </>
+                                                               ):(
+                                                                   <>
+                                                                       {item.price.toLocaleString('vi-VN', {
+                                                                           style: 'currency',
+                                                                           currency: 'VND'
+                                                                       })}
+                                                                   </>
+                                                               )
+                                                               }
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </SwiperSlide>
+
                                             )
                                         }
                                     </Swiper>
@@ -214,50 +256,7 @@ function Home() {
                         </div>
                     </div>
                 </div>
-                <div
-                    className="site-section bg-secondary bg-image"
-                    style={{backgroundImage: 'url("../../public/images/bg_2.jpg")'}}
-                >
-                    <div className="container">
-                        <div className="row align-items-stretch">
-                            <div className="col-lg-6 mb-5 mb-lg-0">
-                                <a
-                                    href="https://nhathuocviet.vn/tin-tuc/thuoc-bo-gan-tot-nhat-hien-nay.html"
-                                    className="banner-1 h-100 d-flex"
-                                    target="_blank"
-                                    style={{backgroundImage: 'url("../../public/images/bg_1.jpg")'}} rel="noreferrer"
-                                >
-                                    <div className="banner-1-inner align-self-center">
-                                        <h2>Sản phẩm của chúng tôi</h2>
-                                        <p>
-                                            Hãy cùng khám phá và tìm hiểu thêm về những
-                                            ưu điểm và đặc điểm độc đáo mà sản phẩm mang lại!
-                                        </p>
-                                    </div>
-                                </a>
-                            </div>
-                            <div className="col-lg-6 mb-5 mb-lg-0">
-                                <a
-                                    href="https://vietnamcleanroom.com/vi/post/top-10-cong-ty-duoc-pham-uy-tin-viet-nam-nam-2021-589.htm"
-                                    className="banner-1 h-100 d-flex"
-                                    target="_blank"
-                                    style={{backgroundImage: 'url("../../public/images/bg_2.jpg")'}} rel="noreferrer"
-                                >
-                                    <div className="banner-1-inner ms-auto  align-self-center">
-                                        <h2>Đánh giá bởi chuyên gia</h2>
-                                        <p>
-                                            Chuyên gia của chúng tôi đã dành thời gian nghiên cứu
-                                            sâu rộng để mang đến cho bạn cái nhìn sâu sắc và chi tiết nhất về trải
-                                            nghiệm sử dụng sản phẩm này.
-                                        </p>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </>
-            <Footer></Footer>
         </>
     );
 }
