@@ -36,12 +36,7 @@ function Header() {
     };
     const getCart = async () => {
         if (userId){
-            const res = await productService.getAllCart(userId);
-            if (res.status === 200){
-                navigate("/cart");
-            }else {
-                console.log("Không lấy được dữ liệu")
-            }
+            navigate("/cart");
         }else {
             navigate("/login")
             toast("Bạn phải đăng nhập trước khi vào giỏ hàng")

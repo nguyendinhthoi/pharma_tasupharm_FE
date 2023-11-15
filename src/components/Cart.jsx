@@ -10,26 +10,32 @@ function Cart() {
     const navigate = useNavigate();
     const [products, setProducts] = useState([]);
     const [userId, setUserId] = useState("");
+    const [hasResult, setHasResult] = useState(false);
     const getAllCart = async () => {
         const jwtToken = loginService.getJwtToken();
         if (!jwtToken){
             navigate("/login")
             toast("Bạn phải đăng nhập trước khi vào giỏ hàng")
         }else {
-            const user = await loginService.getUser(jwtToken.sub)
-            setUserId(user.id)
-            const res = await productService.getAllCart(user.id);
-            console.log(res.data)
-            if (res.status === 200){
-                setProducts(res.data);
-            }else {
-                console.log("Lấy dữ liệu thất bại")
+            try {
+                const user = await loginService.getUser(jwtToken.sub)
+                setUserId(user.id)
+                const res = await productService.getAllCart(user.id);
+                setHasResult(res.data.length > 0)
+                if (res.status === 200){
+                    setProducts(res.data);
+                }else {
+                    console.log("Lấy dữ liệu thất bại")
+                    setHasResult(false);
+                }
+            }catch (e){
+                setHasResult(false);
             }
         }
     };
     useEffect(() => {
         getAllCart();
-    }, []);
+    }, [userId]);
 
     const handleDelete =async (idProduct) => {
         console.log(idProduct)
@@ -38,7 +44,7 @@ function Cart() {
             if (res.status === 200){
                 console.log(res.data)
                 getAllCart();
-            }else {
+            }else if (res.status === 404){
                 console.log(res.data)
             }
         }
@@ -73,7 +79,8 @@ function Cart() {
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        {products.map((item, index) => (
+                                        {   hasResult ? (
+                                            products.map((item, index) => (
                                             <tr key={index}>
                                                 <td className="product-thumbnail">
                                                     <img
@@ -129,7 +136,14 @@ function Cart() {
                                             </tr>
 
 
-                                        ))}
+                                        )))
+                                        :
+                                            (<tr>
+                                                <td className="text-center" colSpan="6">
+                                                    <b>----Trống----</b>
+                                                </td>
+                                            </tr>)
+                                        }
                                         </tbody>
                                     </table>
                                 </div>
