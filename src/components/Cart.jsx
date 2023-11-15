@@ -4,10 +4,12 @@ import {Link, useNavigate} from "react-router-dom";
 import * as productService from "../service/ProductService.jsx"
 import * as loginService from "../service/LoginService.jsx"
 import {toast} from "react-toastify";
+import {FaTimes} from "react-icons/fa";
 
 function Cart() {
     const navigate = useNavigate();
     const [products, setProducts] = useState([]);
+    const [userId, setUserId] = useState("");
     const getAllCart = async () => {
         const jwtToken = loginService.getJwtToken();
         if (!jwtToken){
@@ -15,7 +17,9 @@ function Cart() {
             toast("Bạn phải đăng nhập trước khi vào giỏ hàng")
         }else {
             const user = await loginService.getUser(jwtToken.sub)
+            setUserId(user.id)
             const res = await productService.getAllCart(user.id);
+            console.log(res.data)
             if (res.status === 200){
                 setProducts(res.data);
             }else {
@@ -27,6 +31,18 @@ function Cart() {
         getAllCart();
     }, []);
 
+    const handleDelete =async (idProduct) => {
+        console.log(idProduct)
+        if (userId){
+            const res = await productService.deleteProduct(userId,idProduct);
+            if (res.status === 200){
+                console.log(res.data)
+                getAllCart();
+            }else {
+                console.log(res.data)
+            }
+        }
+    };
     return (
         <>
             <>
@@ -69,7 +85,10 @@ function Cart() {
                                                 <td className="product-name">
                                                     <h2 className="h5 text-black">{item.name}</h2>
                                                 </td>
-                                                <td>{item.price}</td>
+                                                <td>{item.price.toLocaleString('vi-VN', {
+                                                    style: 'currency',
+                                                    currency: 'VND'
+                                                })}</td>
                                                 <td>
                                                     <div className="input-group mb-3" style={{ maxWidth: 120 }}>
                                                         <div className="input-group-prepend">
@@ -83,7 +102,7 @@ function Cart() {
                                                         <input
                                                             type="text"
                                                             className="form-control text-center"
-                                                            defaultValue={item.quantityOrder}
+                                                            defaultValue={item.quantity}
                                                             placeholder=""
                                                             aria-label="Example text with button addon"
                                                             aria-describedby="button-addon1"
@@ -98,10 +117,13 @@ function Cart() {
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td>$49.00</td>
+                                                <td>{(item.price * item.quantity).toLocaleString('vi-VN', {
+                                                    style: 'currency',
+                                                    currency: 'VND'
+                                                })}</td>
                                                 <td>
-                                                    <a href="#" className="btn btn-primary height-auto btn-sm">
-                                                        X
+                                                    <a onClick={() => handleDelete(item.idProduct)} className="btn btn-primary height-auto btn-sm">
+                                                        <FaTimes />
                                                     </a>
                                                 </td>
                                             </tr>

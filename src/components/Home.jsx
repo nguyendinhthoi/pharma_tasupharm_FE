@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import Header from "./Header.jsx";
-import Footer from "./Footer.jsx";
+
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import 'swiper/css/pagination';
