@@ -38,7 +38,7 @@ function Header() {
         if (userId){
             navigate("/cart");
         }else {
-            navigate("/login")
+            navigate("/login");
             toast("Bạn phải đăng nhập trước khi vào giỏ hàng")
         }
     };
@@ -132,7 +132,7 @@ function Header() {
                                 <a href="#">
                                     <BsSearch className="fs-4 me-5" onClick={openSearch}/>
                                 </a>
-                                <a className="fs-4 me-5" role="button" onClick={getCart}>
+                                <a className="fs-4 me-5" role="button" onClick={()=>getCart()}>
                                     <BsFillCartCheckFill/>
                                 </a>
                                 <Dropdown className="d-inline-block">

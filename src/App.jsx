@@ -12,14 +12,11 @@ import "../src/css/jquery-ui.css"
 import "../src/css/magnific-popup.css"
 import "../src/css/aos.css"
 import "../src/css/style.css"
-import Header from "./components/Header.jsx";
-import Footer from "./components/Footer.jsx";
 
 function App() {
 
   return (
       <>
-          <Header/>
         <Routes>
           <Route path="/" element={<Home/>}></Route>
           <Route path="/login" element={<Login/>}></Route>
@@ -28,7 +25,6 @@ function App() {
           <Route path="/listSearchHome/:searchName" element={<ListSearchHome/>}></Route>
         </Routes>
           <ToastContainer></ToastContainer>
-          <Footer/>
       </>
   )
 }

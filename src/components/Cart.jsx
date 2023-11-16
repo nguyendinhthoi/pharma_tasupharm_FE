@@ -5,6 +5,8 @@ import * as productService from "../service/ProductService.jsx"
 import * as loginService from "../service/LoginService.jsx"
 import {toast} from "react-toastify";
 import {FaTimes} from "react-icons/fa";
+import Header from "./Header.jsx";
+import Footer from "./Footer.jsx";
 
 function Cart() {
     const navigate = useNavigate();
@@ -50,8 +52,8 @@ function Cart() {
         }
     };
     return (
-        <>
             <>
+                <Header/>
                 <div className="bg-light py-3">
                     <div className="container">
                         <div className="row">
@@ -224,8 +226,8 @@ function Cart() {
                         </div>
                     </div>
                 </div>
+                <Footer/>
             </>
-        </>
     );
 }
 

@@ -10,6 +10,8 @@ import * as productService from "../service/ProductService.jsx"
 import * as loginService from "../service/LoginService.jsx"
 import {BsCart, BsEye} from "react-icons/bs";
 import {toast} from "react-toastify";
+import Header from "./Header.jsx";
+import Footer from "./Footer.jsx";
 
 function Home() {
     const [bestSellers, setBestSellers] = useState([])
@@ -53,8 +55,8 @@ function Home() {
         }
     };
     return (
-        <>
             <>
+                <Header/>
                 <div
                     className="site-blocks-cover"
                     style={{backgroundImage: 'url("../../public/images/hero_1.jpg")'}}
@@ -255,8 +257,8 @@ function Home() {
                         </div>
                     </div>
                 </div>
+                <Footer/>
             </>
-        </>
     );
 }
 

@@ -44,6 +44,7 @@ function ListSearchHome() {
 
     return (
         <>
+            <Header/>
             <div className="site-section">
                 <div className="container">
                     <div className="row">
@@ -117,7 +118,7 @@ function ListSearchHome() {
                     breakLinkClassName={"page-link"}
                     activeClassName={"active"}
                 />
-
+            <Footer/>
         </>
     );
 }
