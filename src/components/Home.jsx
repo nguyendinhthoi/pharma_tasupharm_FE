@@ -21,7 +21,6 @@ function Home() {
     const {cartState,userId,dispatch} = useContext(CartContext);
     console.log(cartState)
     console.log(userId)
-    console.log(dispatch)
     const getAllBestSellers = async () => {
         try {
             const res = await productService.getBestSellers();
@@ -222,9 +221,10 @@ function Home() {
                                                                 <Link to={`/detail/${item.idCategory}/${item.id}`} className="t-icon-link">
                                                                     <BsEye className="t-icon" />
                                                                 </Link>
-                                                                <Link to="/cart" className="t-icon-link">
-                                                                    <BsCart className="t-icon" />
-                                                                </Link>
+                                                                <a className="t-icon-link" role="button"
+                                                                   onClick={()=> getIntoCart(item.id)}>
+                                                                    <BsCart className="t-icon"/>
+                                                                </a>
                                                             </div>
                                                         </div>
                                                         <div className="text-center mb-5">

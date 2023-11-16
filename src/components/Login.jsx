@@ -58,6 +58,7 @@ function Login() {
             console.log(res)
             loginService.addJwtTokenToLocalStorage(res.data.jwtToken);
             const tempURL = localStorage.getItem("tempURL");
+            console.log(tempURL)
             localStorage.removeItem("tempURL");
             if (res.status === 200) {
                 if (tempURL) {

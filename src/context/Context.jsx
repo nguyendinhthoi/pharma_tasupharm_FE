@@ -11,7 +11,15 @@ const cartReducer = (state,action) => {
     const removeFromCart = async (idUser,idProduct) => {
         await productService.deleteProduct(idUser,idProduct)
     };
+    const updateQuantity = async (idUser, idProduct, newQuantity) => {
+        await productService.updateQuantity(idUser,idProduct,newQuantity);
+    };
     switch (action.type) {
+        case 'SET_CART':
+            return {
+                ...state,
+                cartItem : action.payload.carts
+            };
         case 'ADD_TO_CART':
             const existingItem = state.cartItem.find(item => item.idProduct === action.payload.idProduct);
             if (existingItem) {
@@ -26,7 +34,14 @@ const cartReducer = (state,action) => {
             removeFromCart(action.payload.idUser,action.payload.idProduct)
             return {
                 ...state,
-                cartItem: state.cartItem.filter(item => item.idProduct !== action.payload.idProduct)
+                cartItem : state.cartItem.filter(item => item.idProduct !== action.payload.idProduct)
+            }
+        case 'UPDATE_QUANTITY':
+            updateQuantity(action.payload.idUser,action.payload.idProduct,action.payload.newQuantity)
+            return {
+                ...state,
+                cartItem : state.cartItem.map((item) => item.idProduct === action.payload.idProduct
+                ? {...item,quantity:action.payload.newQuantity} : item)
             }
         default :
             return state;

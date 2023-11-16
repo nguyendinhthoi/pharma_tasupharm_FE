@@ -1,11 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import Header from "./Header.jsx";
 import Footer from "./Footer.jsx";
-import {Link, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import * as productService from "../service/ProductService.jsx"
 import ReactPaginate from "react-paginate";
 import "../css/style.css"
 import {BsCart, BsEye} from "react-icons/bs";
+import * as loginService from "../service/LoginService.jsx";
+import {toast} from "react-toastify";
+import {CartContext} from "../context/Context.jsx";
 
 
 function ListSearchHome() {
@@ -14,7 +17,9 @@ function ListSearchHome() {
     const [listProductByName, setListProductByName] = useState([]);
     const [notFound, setNotFound] = useState("");
     const [currentSearchName, setCurrentSearchName] = useState("");
+    const navigate = useNavigate();
     const newSearchName = useParams().searchName;
+    const {userId,dispatch} = useContext(CartContext);
 
     const getAllSearchName = async () => {
         try {
@@ -32,6 +37,22 @@ function ListSearchHome() {
             }
         }catch (e){
             console.log("Lỗi truy xuất dữ liệu");
+        }
+    };
+    const getIntoCart = (id) => {
+        const jwtToken = loginService.getJwtToken();
+        if (!jwtToken){
+            localStorage.setItem("tempURL",window.location.pathname);
+            navigate("/login")
+            toast("Bạn phải đăng nhập trước khi thêm vào giỏ hàng")
+        }else {
+            dispatch({type : 'ADD_TO_CART',
+                payload :
+                    {
+                        idUser : userId,
+                        idProduct : id
+                    }
+            })
         }
     };
     useEffect(() => {
@@ -61,9 +82,10 @@ function ListSearchHome() {
                                     <Link to={`/detail/${item.idCategory}/${item.id}`} className="t-icon-link">
                                         <BsEye className="t-icon" />
                                     </Link>
-                                    <Link to="/cart" className="t-icon-link">
-                                        <BsCart className="t-icon" />
-                                    </Link>
+                                    <a className="t-icon-link" role="button"
+                                       onClick={()=> getIntoCart(item.id)}>
+                                        <BsCart className="t-icon"/>
+                                    </a>
                                 </div>
                             </div>
                             <h3 className="text-dark">

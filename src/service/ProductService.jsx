@@ -1,5 +1,15 @@
 import axios from "axios";
 
+export const updateQuantity =async (idUser, idProduct, newQuantity) => {
+    try {
+        const res = await axios.post(`http://localhost:8080/cart/updateQuantity/${idUser}/${idProduct}/?quantity=${newQuantity}`)
+        return res;
+    }catch (e){
+        console.log("Lỗi số lượng")
+    }
+};
+
+
 export const deleteProduct = async (idUser, idProduct) =>{
     try {
         const res = await axios.post(`http://localhost:8080/cart/delete/${idUser}/${idProduct}`)
