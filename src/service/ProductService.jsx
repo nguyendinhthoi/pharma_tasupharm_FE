@@ -1,8 +1,12 @@
 import axios from "axios";
 
 export const deleteProduct = async (idUser, idProduct) =>{
-    const res = await axios.post(`http://localhost:8080/cart/delete/${idUser}/${idProduct}`)
-    return res;
+    try {
+        const res = await axios.post(`http://localhost:8080/cart/delete/${idUser}/${idProduct}`)
+        return res;
+    }catch (e){
+        console.log("Lỗi xóa")
+    }
 }
 
 

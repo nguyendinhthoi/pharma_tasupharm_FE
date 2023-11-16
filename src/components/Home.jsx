@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
@@ -12,11 +12,16 @@ import {BsCart, BsEye} from "react-icons/bs";
 import {toast} from "react-toastify";
 import Header from "./Header.jsx";
 import Footer from "./Footer.jsx";
+import {CartContext} from "../context/Context.jsx";
 
 function Home() {
     const [bestSellers, setBestSellers] = useState([])
     const [newProducts, setNewProducts] = useState([])
     const navigate = useNavigate();
+    const {cartState,userId,dispatch} = useContext(CartContext);
+    console.log(cartState)
+    console.log(userId)
+    console.log(dispatch)
     const getAllBestSellers = async () => {
         try {
             const res = await productService.getBestSellers();
@@ -39,19 +44,19 @@ function Home() {
         getAllBestSellers();
         getAllNewProducts()
     }, []);
-    const getIntoCart = async (idProduct) => {
-        console.log(idProduct)
+    const getIntoCart = (id) => {
         const jwtToken = loginService.getJwtToken();
-        console.log(jwtToken)
-        if (!jwtToken) {
+        if (!jwtToken){
             navigate("/login")
             toast("Bạn phải đăng nhập trước khi thêm vào giỏ hàng")
         }else {
-            const user = await loginService.getUser(jwtToken.sub);
-            const res = await productService.addToCart(idProduct,user.id);
-            if (res.status === 200){
-                console.log(res)
-            }
+                dispatch({type : 'ADD_TO_CART',
+                    payload :
+                        {
+                            idUser : userId,
+                            idProduct : id
+                        }
+                })
         }
     };
     return (
@@ -142,7 +147,8 @@ function Home() {
                                                 <Link to={`/detail/${item.idCategory}/${item.id}`} className="t-icon-link">
                                                     <BsEye className="t-icon" />
                                                 </Link>
-                                                <a className="t-icon-link" role="button" onClick={()=> getIntoCart(item.id)}>
+                                                <a className="t-icon-link" role="button"
+                                                   onClick={()=> getIntoCart(item.id)}>
                                                     <BsCart className="t-icon"/>
                                                 </a>
                                             </div>

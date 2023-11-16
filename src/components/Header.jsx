@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 // import "../css/style.css"
 import {Link, useNavigate} from "react-router-dom";
 import * as loginService from "../service/LoginService.jsx"
@@ -7,8 +7,7 @@ import {BiSolidUserCircle} from "react-icons/bi";
 import {BsFillCartCheckFill, BsSearch} from "react-icons/bs";
 import {Dropdown} from "react-bootstrap";
 import {toast} from "react-toastify";
-
-
+import {CartContext} from "../context/Context.jsx";
 
 function Header() {
     const [userName, setUserName] = useState("");
@@ -17,7 +16,8 @@ function Header() {
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [searchName, setSearchName] = useState("");
     const navigate = useNavigate();
-
+    const {cartState} = useContext(CartContext);
+    console.log(cartState)
     const getUserId = async () => {
         const jwtToken = loginService.getJwtToken();
         console.log(jwtToken)
@@ -58,6 +58,7 @@ function Header() {
     const handleLogout = () => {
         localStorage.removeItem("JWT");
         setUserName(undefined);
+        navigate("/")
         toast("Đăng xuất thành công");
     };
     const openSearch = () => {
@@ -132,9 +133,11 @@ function Header() {
                                 <a href="#">
                                     <BsSearch className="fs-4 me-5" onClick={openSearch}/>
                                 </a>
-                                <a className="fs-4 me-5" role="button" onClick={()=>getCart()}>
-                                    <BsFillCartCheckFill/>
+                                <a className="fs-4-container me-5" role="button" onClick={() => getCart()}>
+                                    <BsFillCartCheckFill className="fs-4" />
+                                    {userId && <span className="t-cart-item-count">{cartState.cartItem.length}</span>}
                                 </a>
+
                                 <Dropdown className="d-inline-block">
                                     <Dropdown.Toggle variant={userName ? "info" : ""} id="dropdown-basic"
                                                      className="bg-white border-white">

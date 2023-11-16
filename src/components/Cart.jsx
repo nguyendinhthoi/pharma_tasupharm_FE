@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 
 import {Link, useNavigate} from "react-router-dom";
 import * as productService from "../service/ProductService.jsx"
@@ -7,33 +7,28 @@ import {toast} from "react-toastify";
 import {FaTimes} from "react-icons/fa";
 import Header from "./Header.jsx";
 import Footer from "./Footer.jsx";
+import {CartContext} from "../context/Context.jsx";
 
 function Cart() {
-    const navigate = useNavigate();
     const [products, setProducts] = useState([]);
-    const [userId, setUserId] = useState("");
     const [hasResult, setHasResult] = useState(false);
+    const cartContext = useContext(CartContext);
+    const { userId, dispatch } = cartContext;
     const getAllCart = async () => {
-        const jwtToken = loginService.getJwtToken();
-        if (!jwtToken){
-            navigate("/login")
-            toast("Bạn phải đăng nhập trước khi vào giỏ hàng")
-        }else {
-            try {
-                const user = await loginService.getUser(jwtToken.sub)
-                setUserId(user.id)
-                const res = await productService.getAllCart(user.id);
-                setHasResult(res.data.length > 0)
-                if (res.status === 200){
-                    setProducts(res.data);
-                }else {
-                    console.log("Lấy dữ liệu thất bại")
-                    setHasResult(false);
-                }
-            }catch (e){
+        try {
+            const res = await productService.getAllCart(userId);
+            setHasResult(res.data.length > 0)
+            if (res.status === 200){
+                setProducts(res.data);
+                getAllCart();
+            }else {
+                console.log("Lấy dữ liệu thất bại")
                 setHasResult(false);
             }
+        }catch (e){
+            setHasResult(false);
         }
+
     };
     useEffect(() => {
         getAllCart();
@@ -42,13 +37,13 @@ function Cart() {
     const handleDelete =async (idProduct) => {
         console.log(idProduct)
         if (userId){
-            const res = await productService.deleteProduct(userId,idProduct);
-            if (res.status === 200){
-                console.log(res.data)
-                getAllCart();
-            }else if (res.status === 404){
-                console.log(res.data)
-            }
+            dispatch({type : 'REMOVE_FROM_CART',
+                payload :
+                    {
+                        idUser : userId,
+                        idProduct : idProduct
+                    }
+            })
         }
     };
     return (

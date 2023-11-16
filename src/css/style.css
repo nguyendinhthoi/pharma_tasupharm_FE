@@ -1168,3 +1168,27 @@ a {
 .t-item:hover img {
   filter: brightness(70%); /* Adjust the brightness as needed */
 }
+.t-cart-item-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px; /* Điều chỉnh kích thước padding */
+  font-size: 10px; /* Điều chỉnh kích thước font */
+}
+
+.fs-4 {
+  position: relative;
+}
+
+.fs-4-container {
+  position: relative;
+}
+
+/* Tăng khoảng cách giữa icon và số lượng */
+.fs-4-container {
+  margin-right: 10px;
+}
+

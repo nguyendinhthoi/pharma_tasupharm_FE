@@ -35,7 +35,7 @@ function Login() {
         userName: Yup.string()
             .required("Không để trống tên tài khoản!")
             .test('check-userName', 'Không để trống tên tài khoản!', (value) => value.trim().length !== 0)
-            .min(3, "Tên đăng nhập phải lơớn hơn hoặc bằng 3 ký tự!")
+            .min(3, "Tên đăng nhập phải lớn hơn hoặc bằng 3 ký tự!")
             .max(50, "Tên đăng nhập phải ít hơn hoặc bằng 50 ký tự!"),
         password: Yup.string()
             .required("Không được để trống mật khẩu!")
