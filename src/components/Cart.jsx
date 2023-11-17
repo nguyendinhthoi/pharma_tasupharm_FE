@@ -6,12 +6,11 @@ import {FaTimes} from "react-icons/fa";
 import Header from "./Header.jsx";
 import Footer from "./Footer.jsx";
 import {CartContext} from "../context/Context.jsx";
+import PaypalCheckoutButton from "./PaypalCheckoutButton.jsx";
 
 function Cart() {
     const [hasResult, setHasResult] = useState(false);
     const [isRender, setIsRender] = useState(false);
-
-
     const cartContext = useContext(CartContext);
     const { cartState, userId, dispatch } = cartContext;
     console.log(cartState)
@@ -250,11 +249,12 @@ function Cart() {
                                     </div>
                                     <div className="row">
                                         <div className="col-md-12">
-                                            <button
-                                                className="btn btn-primary btn-lg btn-block"
-                                            >
-                                                Tiến hành thanh toán
-                                            </button>
+                                            {/*<button*/}
+                                            {/*    className="btn btn-primary btn-lg btn-block"*/}
+                                            {/*>*/}
+                                            {/*    Tiến hành thanh toán*/}
+                                            {/*</button>*/}
+                                            <PaypalCheckoutButton/>
                                         </div>
                                     </div>
                                 </div>

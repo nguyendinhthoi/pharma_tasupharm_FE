@@ -12,11 +12,13 @@ import "../src/css/jquery-ui.css"
 import "../src/css/magnific-popup.css"
 import "../src/css/aos.css"
 import "../src/css/style.css"
+import {PayPalScriptProvider} from "@paypal/react-paypal-js";
 
 function App() {
 
   return (
       <>
+          <PayPalScriptProvider options={{"client-id": "AWrjODvO403E_caMD3n2ryCcFV95da46WDveu8EeKg_aoOXChsNVe2DvIxfUOaaSg5YelaZm2lEw3yuR"}}>
         <Routes>
           <Route path="/" element={<Home/>}></Route>
           <Route path="/login" element={<Login/>}></Route>
@@ -25,6 +27,7 @@ function App() {
           <Route path="/listSearchHome/:searchName" element={<ListSearchHome/>}></Route>
         </Routes>
           <ToastContainer></ToastContainer>
+          </PayPalScriptProvider>
       </>
   )
 }
