@@ -6,7 +6,7 @@ import * as productService from "../service/ProductService.jsx";
 export const CartContext = createContext({});
 const cartReducer = (state,action) => {
     const getIntoCart = async (idUser, idProduct) => {
-            await productService.addToCart(idProduct,idUser)
+        await productService.addToCart(idProduct,idUser)
     };
     const removeFromCart = async (idUser,idProduct) => {
         await productService.deleteProduct(idUser,idProduct)
@@ -23,12 +23,14 @@ const cartReducer = (state,action) => {
         case 'ADD_TO_CART':
             const existingItem = state.cartItem.find(item => item.idProduct === action.payload.idProduct);
             if (existingItem) {
-                return state;
+                return {
+                    ...state,
+                };
             }
             getIntoCart(action.payload.idUser,action.payload.idProduct);
             return {
                 ...state,
-                cartItem : [...state.cartItem,action.payload]
+                cartItem : [...state.cartItem,action.payload],
             };
         case 'REMOVE_FROM_CART':
             removeFromCart(action.payload.idUser,action.payload.idProduct)
@@ -41,7 +43,7 @@ const cartReducer = (state,action) => {
             return {
                 ...state,
                 cartItem : state.cartItem.map((item) => item.idProduct === action.payload.idProduct
-                ? {...item,quantity:action.payload.newQuantity} : item)
+                    ? {...item,quantity:action.payload.newQuantity} : item)
             }
         default :
             return state;
@@ -52,11 +54,24 @@ export const CartProvider = ({children}) => {
     const [ cartState,dispatch ] = useReducer(cartReducer,{cartItem :[]});
     const [userId, setUserId] = useState("");
 
+    const getCartUser =async (id) => {
+        const res = await productService.getAllCart(id);
+        dispatch({
+            type: 'SET_CART',
+            payload :
+                {
+                    carts : res.data
+                }
+        })
+    };
     const getUserId =async () => {
         const jwtToken = loginService.getJwtToken();
-            const user = await loginService.getUser(jwtToken.sub);
-            setUserId(user.id);
+        console.log(jwtToken)
+        const user = await loginService.getUser(jwtToken.sub);
+        setUserId(user.id);
+        getCartUser(user.id)
     };
+
     useEffect(() => {
         getUserId();
     }, [cartReducer]);

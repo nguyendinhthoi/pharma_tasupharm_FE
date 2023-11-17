@@ -18,6 +18,7 @@ function Header() {
     const navigate = useNavigate();
     const {cartState} = useContext(CartContext);
     console.log(cartState)
+    console.log(userId)
     const getUserId = async () => {
         const jwtToken = loginService.getJwtToken();
         console.log(jwtToken)
@@ -53,11 +54,12 @@ function Header() {
     useEffect(() => {
         getUserId();
         getCategories();
-    }, [userName]);
+    }, [userName,cartState]);
 
     const handleLogout = () => {
         localStorage.removeItem("JWT");
         setUserName(undefined);
+        setUserId(undefined)
         navigate("/")
         toast("Đăng xuất thành công");
     };
@@ -74,6 +76,7 @@ function Header() {
             setIsSearchActive(false)
         }
     };
+
 
     return (
         <>
@@ -135,7 +138,7 @@ function Header() {
                                 </a>
                                 <a className="fs-4-container me-5" role="button" onClick={() => getCart()}>
                                     <BsFillCartCheckFill className="fs-4" />
-                                    {userId && <span className="t-cart-item-count">{cartState.cartItem.length}</span>}
+                                    {userName && <span className="t-cart-item-count">{cartState.cartItem.length}</span>}
                                 </a>
 
                                 <Dropdown className="d-inline-block">
