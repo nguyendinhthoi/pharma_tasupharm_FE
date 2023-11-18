@@ -19,18 +19,12 @@ function Header() {
     const navigate = useNavigate();
     const {cartState,dispatch} = useContext(CartContext);
     const {cartItem} = cartState;
-    console.log(cartState)
-    console.log(userId)
-    console.log(cartItem)
     const getUserId = async () => {
         const jwtToken = loginService.getJwtToken();
-        console.log(jwtToken)
         const user = await loginService.getUser(jwtToken.sub)
-        console.log(user)
         setUserId(user.id);
         try {
             const res = await loginService.getCustomer(user.id);
-            console.log(res)
             if (res.status === 200) {
                 setUserName(res.data.name);
             }
