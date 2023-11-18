@@ -21,16 +21,16 @@ const cartReducer = (state,action) => {
                 cartItem : action.payload.carts
             };
         case 'ADD_TO_CART':
-            const existingItem = state.cartItem.find(item => item.idProduct === action.payload.idProduct);
+            const existingItem = state.cartItem.find(item => (item.idProduct ? item.idProduct : item.id) === action.payload.item.id);
             if (existingItem) {
                 return {
                     ...state,
                 };
             }
-            getIntoCart(action.payload.idUser,action.payload.idProduct);
+            getIntoCart(action.payload.idUser,action.payload.item.id);
             return {
                 ...state,
-                cartItem : [...state.cartItem,action.payload],
+                cartItem : [...state.cartItem,action.payload.item],
             };
         case 'REMOVE_FROM_CART':
             removeFromCart(action.payload.idUser,action.payload.idProduct)

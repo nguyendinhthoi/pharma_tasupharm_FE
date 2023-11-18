@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const confirmOrder = async (userId) => {
     try {
-        const res = await axios.post(`http://localhost:8080/order/payment/${userId}`)
+        const res = await axios.post(`http://localhost:8080/cart/payment/${userId}`)
         return res;
     }catch (e){
         console.log("Lỗi tạo order")

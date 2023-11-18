@@ -8,6 +8,7 @@ import {BsFillCartCheckFill, BsSearch} from "react-icons/bs";
 import {Dropdown} from "react-bootstrap";
 import {toast} from "react-toastify";
 import {CartContext} from "../context/Context.jsx";
+import {AiFillDelete} from "react-icons/ai";
 
 function Header() {
     const [userName, setUserName] = useState("");
@@ -16,9 +17,11 @@ function Header() {
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [searchName, setSearchName] = useState("");
     const navigate = useNavigate();
-    const {cartState} = useContext(CartContext);
+    const {cartState,dispatch} = useContext(CartContext);
+    const {cartItem} = cartState;
     console.log(cartState)
     console.log(userId)
+    console.log(cartItem)
     const getUserId = async () => {
         const jwtToken = loginService.getJwtToken();
         console.log(jwtToken)
@@ -54,7 +57,7 @@ function Header() {
     useEffect(() => {
         getUserId();
         getCategories();
-    }, [userName,cartState]);
+    }, [userName,cartItem]);
 
     const handleLogout = () => {
         localStorage.removeItem("JWT");
@@ -136,10 +139,40 @@ function Header() {
                                 <a href="#">
                                     <BsSearch className="fs-4 me-5" onClick={openSearch}/>
                                 </a>
-                                <a className="fs-4-container me-5" role="button" onClick={() => getCart()}>
-                                    <BsFillCartCheckFill className="fs-4" />
-                                    {userName && <span className="t-cart-item-count">{cartState.cartItem.length}</span>}
-                                </a>
+                                <div className="t-cart-dropdown-container">
+                                    <div className="fs-4-container" role="button" onClick={() => getCart()}>
+                                        <BsFillCartCheckFill className="fs-4" />
+                                        {userName && <span className="t-cart-item-count">{cartItem.length}</span>}
+                                    </div>
+                                    <div className="t-cart-dropdown-content">
+                                        {cartItem.length > 0 ? (cartItem.map((item, index) => (
+                                            <div className="t-cartItem-hover" key={index}>
+                                                <img src={item.image} className="t-cartItemImg-hover" alt={item.name} />
+                                                <div className="t-cartItemDetail-hover">
+                                                    <span id="card-title-hover" title={item.name}>{item.name}</span>
+                                                    <span>{item.price}</span>
+                                                </div>
+                                                <AiFillDelete
+                                                    fontSize="20px"
+                                                    style={{ cursor: "pointer" }}
+                                                    onClick={() =>
+                                                        dispatch({
+                                                            type: "REMOVE_FROM_CART",
+                                                            payload: {
+                                                                idUser: userId,
+                                                                idProduct: item.idProduct,
+                                                            },
+                                                        })
+                                                    }
+                                                />
+                                            </div>
+                                        ))):
+                                            (
+                                                <div className="text-center text-danger">Giỏ hàng trống</div>
+                                            )}
+                                    </div>
+                                </div>
+
 
                                 <Dropdown className="d-inline-block">
                                     <Dropdown.Toggle variant={userName ? "info" : ""} id="dropdown-basic"

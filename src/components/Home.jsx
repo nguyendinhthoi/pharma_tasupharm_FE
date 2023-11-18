@@ -39,10 +39,9 @@ function Home() {
         getAllBestSellers();
         getAllNewProducts()
     }, [userId]);
-    const getIntoCart = (id) => {
+    const getIntoCart = (product) => {
         const jwtToken = loginService.getJwtToken();
-        console.log(userId)
-        console.log(id)
+        console.log(product)
         if (!jwtToken){
             navigate("/login")
             toast("Bạn phải đăng nhập trước khi thêm vào giỏ hàng")
@@ -51,12 +50,9 @@ function Home() {
                 payload :
                     {
                         idUser : userId,
-                        idProduct : id
+                        item : product
                     }
             })
-            console.log(cartState)
-            console.log(cartState.notificate)
-            toast(cartState.notificate)
         }
     };
     return (
@@ -148,7 +144,7 @@ function Home() {
                                             <BsEye className="t-icon" />
                                         </Link>
                                         <a className="t-icon-link" role="button"
-                                           onClick={()=> getIntoCart(item.id)}>
+                                           onClick={()=> getIntoCart(item)}>
                                             <BsCart className="t-icon"/>
                                         </a>
                                     </div>
@@ -223,7 +219,7 @@ function Home() {
                                                                 <BsEye className="t-icon" />
                                                             </Link>
                                                             <a className="t-icon-link" role="button"
-                                                               onClick={()=> getIntoCart(item.id)}>
+                                                               onClick={()=> getIntoCart(item)}>
                                                                 <BsCart className="t-icon"/>
                                                             </a>
                                                         </div>

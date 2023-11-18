@@ -1130,6 +1130,14 @@ a {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+#card-title-hover{
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 .t-icons-overlay {
   display: flex;
   align-items: center;
@@ -1185,10 +1193,57 @@ a {
 
 .fs-4-container {
   position: relative;
+  margin-right: 10px;
+
+}
+/* CSS cho dropdown container */
+.t-cart-dropdown-container {
+  position: relative;
+  display: inline-block;
 }
 
-/* Tăng khoảng cách giữa icon và số lượng */
-.fs-4-container {
-  margin-right: 10px;
+/* CSS cho dropdown khi hover */
+.t-cart-dropdown-container:hover .t-cart-dropdown-content {
+  display: block;
+}
+
+/* CSS cho nội dung dropdown */
+.t-cart-dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  min-width: 370px;
+  padding: 10px;
+  border-radius: 5px;
+  top: 100%;
+  right: 10%;
+  max-height: 300px; /* Điều chỉnh độ cao tối đa của dropdown */
+  overflow-y: auto; /* Sử dụng thanh cuộn nếu nội dung quá nhiều */
+}
+
+/* CSS cho mỗi mục trong dropdown */
+/* CSS cho mỗi mục trong dropdown */
+.t-cartItem-hover {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 0 10px;
+}
+
+.t-cartItemImg-hover {
+  border-radius: 50%;
+  width: 20%;
+  height: 20%;
+  object-fit: cover;
+}
+
+.t-cartItemDetail-hover {
+  display: flex;
+  flex: 1;
+  padding: 0 20px;
+  flex-direction: column;
 }
 
