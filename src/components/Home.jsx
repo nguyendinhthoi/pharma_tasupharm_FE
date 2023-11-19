@@ -18,7 +18,8 @@ function Home() {
     const [bestSellers, setBestSellers] = useState([])
     const [newProducts, setNewProducts] = useState([])
     const navigate = useNavigate();
-    const {userId,dispatch} = useContext(CartContext);
+    const {cartState,userId,dispatch} = useContext(CartContext);
+    console.log(cartState)
     const getAllBestSellers = async () => {
         try {
             const res = await productService.getBestSellers();
@@ -53,6 +54,7 @@ function Home() {
                         item : product
                     }
             })
+            toast("Đã thêm sản phẩm vào giỏ hàng")
         }
     };
     return (

@@ -7,6 +7,8 @@ import Header from "./Header.jsx";
 import Footer from "./Footer.jsx";
 import {CartContext} from "../context/Context.jsx";
 import PaypalCheckoutButton from "./PaypalCheckoutButton.jsx";
+import {toast} from "react-toastify";
+import Swal from "sweetalert2";
 
 function Cart() {
     const [hasResult, setHasResult] = useState(false);
@@ -86,6 +88,31 @@ function Cart() {
         }
     };
 
+    const handlePayment = async () => {
+        try {
+            const res = await productService.confirmOrder(userId);
+            if (res.status === 200){
+                dispatch({
+                    type:"SET_CART",
+                    payload: {
+                        carts : []
+                    }
+                })
+                toast("Bạn đã thanh toán thành công");
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Thanh toán thành công!',
+                    text: 'Cảm ơn bạn đã mua sắm!',
+                    confirmButtonText: 'OK',
+                    showCancelButton: false,
+                    showCloseButton: false,
+                });
+                setIsRender(!isRender);
+            }
+        }catch (e){
+            console.log("lỗi thanh toán")
+        }
+    };
     return (
         <>
             <Header/>
@@ -116,7 +143,7 @@ function Cart() {
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {   hasResult ? (
+                                    {   hasResult || cartState.cartItem.length > 0 ? (
                                             cartState.cartItem.map((item, index) => (
                                                 <tr key={index}>
                                                     <td className="product-thumbnail">
@@ -129,10 +156,13 @@ function Cart() {
                                                     <td className="product-name">
                                                         <h2 className="h5 text-black">{item.name}</h2>
                                                     </td>
-                                                    <td>{item.price.toLocaleString('vi-VN', {
+                                                    <td>{item.priceSale == null ? (item.price.toLocaleString('vi-VN', {
                                                         style: 'currency',
                                                         currency: 'VND'
-                                                    })}</td>
+                                                    })) : (item.priceSale.toLocaleString('vi-VN', {
+                                                        style: 'currency',
+                                                        currency: 'VND'
+                                                    }))}</td>
                                                     <td>
                                                         <div className="input-group mb-3" style={{ width: '120px', margin: '0 auto' }}>
                                                             <button
@@ -162,10 +192,13 @@ function Cart() {
                                                         </div>
                                                     </td>
 
-                                                    <td>{(item.price * item.quantity).toLocaleString('vi-VN', {
+                                                    <td>{item.priceSale == null ? ((item.price * item.quantity).toLocaleString('vi-VN', {
                                                         style: 'currency',
                                                         currency: 'VND'
-                                                    })}</td>
+                                                    })) : ((item.priceSale * item.quantity).toLocaleString('vi-VN', {
+                                                        style: 'currency',
+                                                        currency: 'VND'
+                                                    }))}</td>
                                                     <td>
                                                         <a onClick={() => handleDelete(item.idProduct)} className="btn btn-primary height-auto btn-sm">
                                                             <FaTimes />
@@ -176,11 +209,13 @@ function Cart() {
 
                                             )))
                                         :
-                                        (<tr>
+                                        (
+                                            <tr>
                                             <td className="text-center" colSpan="6">
                                                 <b>----Trống----</b>
                                             </td>
-                                        </tr>)
+                                            </tr>
+                                        )
                                     }
                                     </tbody>
                                 </table>
@@ -224,36 +259,40 @@ function Cart() {
                                 <div className="col-md-7">
                                     <div className="row">
                                         <div className="col-md-12 text-right border-bottom mb-5">
-                                            <h3 className="text-black h4 text-uppercase">Tổng giỏ hàng</h3>
+                                            <h3 className="t-text-black h4 text-uppercase">Tổng giỏ hàng</h3>
                                         </div>
                                     </div>
-                                    <div className="row mb-3">
+                                    <div className="row t-mb-3">
                                         <div className="col-md-6">
-                                            <span className="text-black">Tiền giảm giá</span>
+                                            <span className="t-text-black">Tiền giảm giá</span>
                                         </div>
                                         <div className="col-md-6 text-right">
-                                            <strong className="text-black">$230.00</strong>
+                                            <strong className="t-text-black">0 đ</strong>
                                         </div>
                                     </div>
-                                    <div className="row mb-5">
+                                    <div className="row t-mb-5">
                                         <div className="col-md-6">
-                                            <span className="text-black">Tổng tiền</span>
+                                            <span className="t-text-black">Tổng tiền</span>
                                         </div>
                                         <div className="col-md-6 text-right">
-                                            <strong className="text-black">
+                                            <strong className="t-text-black">
                                                 {cartState.cartItem.reduce((total, item) => total + item.quantity * item.price, 0).toLocaleString('vi-VN', {
                                                     style: 'currency',
                                                     currency: 'VND'
-                                                })}</strong>
+                                                })}
+                                            </strong>
                                         </div>
                                     </div>
                                     <div className="row">
                                         <div className="col-md-12">
-                                            {/*<button*/}
-                                            {/*    className="btn btn-primary btn-lg btn-block"*/}
-                                            {/*>*/}
-                                            {/*    Tiến hành thanh toán*/}
-                                            {/*</button>*/}
+                                            <button
+                                                className="t-btn-primary t-btn-lg btn btn-primary btn-lg btn-block"
+                                                onClick={handlePayment}
+                                            >
+                                                Tiến hành thanh toán
+                                            </button>
+                                        </div>
+                                        <div className="col-md-12 t-mb-0">
                                             <PaypalCheckoutButton/>
                                         </div>
                                     </div>

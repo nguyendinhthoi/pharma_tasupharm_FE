@@ -75,6 +75,16 @@ function Header() {
     };
 
 
+    const handleDelete = (idProduct) => {
+        console.log(idProduct)
+        dispatch({
+            type: "REMOVE_FROM_CART",
+            payload: {
+                idUser: userId,
+                idProduct: idProduct,
+            },
+        })
+    };
     return (
         <>
             <div className="site-wrap">
@@ -144,20 +154,18 @@ function Header() {
                                                 <img src={item.image} className="t-cartItemImg-hover" alt={item.name} />
                                                 <div className="t-cartItemDetail-hover">
                                                     <span id="card-title-hover" title={item.name}>{item.name}</span>
-                                                    <span>{item.price}</span>
+                                                    <span>{item.priceSale == null ? (item.price.toLocaleString('vi-VN', {
+                                                        style: 'currency',
+                                                        currency: 'VND'
+                                                    })) : (item.priceSale.toLocaleString('vi-VN', {
+                                                        style: 'currency',
+                                                        currency: 'VND'
+                                                    }))}</span>
                                                 </div>
                                                 <AiFillDelete
                                                     fontSize="20px"
                                                     style={{ cursor: "pointer" }}
-                                                    onClick={() =>
-                                                        dispatch({
-                                                            type: "REMOVE_FROM_CART",
-                                                            payload: {
-                                                                idUser: userId,
-                                                                idProduct: item.idProduct,
-                                                            },
-                                                        })
-                                                    }
+                                                    onClick={() => handleDelete(item.idProduct ? item.idProduct : item.id)}
                                                 />
                                             </div>
                                         ))):

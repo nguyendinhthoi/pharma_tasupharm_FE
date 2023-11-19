@@ -1,18 +1,39 @@
 import {PayPalButtons} from "@paypal/react-paypal-js";
-import {useContext, useEffect, useState} from "react";
+import {useContext, useState} from "react";
 import {CartContext} from "../context/Context.jsx";
 import * as productService from "../service/ProductService.jsx"
+import Swal from "sweetalert2";
 
 
 const PaypalCheckoutButton = () => {
     const cartContext = useContext(CartContext);
-    const { cartState,userId } = cartContext;
+    const { cartState,userId ,dispatch} = cartContext;
     const [paidFor, setPaidFor] = useState(false);
     const [error, setError] = useState(null);
     console.log(cartState)
 
     const handleApprove = async () => {
-        await productService.confirmOrder(userId);
+        try {
+            const res = await productService.confirmOrder(userId);
+            if (res.status === 200){
+                dispatch({
+                    type:"SET_CART",
+                    payload: {
+                        carts : []
+                    }
+                })
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Thanh toán thành công!',
+                    text: 'Cảm ơn bạn đã mua sắm!',
+                    confirmButtonText: 'OK',
+                    showCancelButton: false,
+                    showCloseButton: false,
+                });
+            }
+        }catch (e){
+            console.log("lỗi paypal")
+        }
     };
 
     if (paidFor) {

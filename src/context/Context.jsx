@@ -36,7 +36,7 @@ const cartReducer = (state,action) => {
             removeFromCart(action.payload.idUser,action.payload.idProduct)
             return {
                 ...state,
-                cartItem : state.cartItem.filter(item => item.idProduct !== action.payload.idProduct)
+                cartItem : state.cartItem.filter(item => (item.idProduct ? item.idProduct : item.id) !== action.payload.idProduct)
             }
         case 'UPDATE_QUANTITY':
             updateQuantity(action.payload.idUser,action.payload.idProduct,action.payload.newQuantity)
