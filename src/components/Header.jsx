@@ -134,7 +134,7 @@ function Header() {
                                             </ul>
                                         </li>
                                         <li>
-                                            <a href="about.html">ABOUT US</a>
+                                            <a href="about.html">Về chúng tôi</a>
                                         </li>
                                     </ul>
                                 </nav>

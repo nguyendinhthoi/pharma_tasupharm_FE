@@ -142,7 +142,7 @@ function Home() {
                                 <div className="position-relative">
                                     <img src={item.image} alt="Image" className="img-fluid" />
                                     <div className="t-icons-overlay">
-                                        <Link to={`/detail/${item.idCategory}/${item.id}`} className="t-icon-link">
+                                        <Link to={`/detail/${item.id}`} className="t-icon-link">
                                             <BsEye className="t-icon" />
                                         </Link>
                                         <a className="t-icon-link" role="button"
@@ -217,7 +217,7 @@ function Home() {
                                                     <div className="position-relative">
                                                         <img src={item.image} alt="Image" className="img-fluid" />
                                                         <div className="t-icons-overlay">
-                                                            <Link to={`/detail/${item.idCategory}/${item.id}`} className="t-icon-link">
+                                                            <Link to={`/detail/${item.id}`} className="t-icon-link">
                                                                 <BsEye className="t-icon" />
                                                             </Link>
                                                             <a className="t-icon-link" role="button"

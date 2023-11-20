@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 
 const PaypalCheckoutButton = () => {
     const cartContext = useContext(CartContext);
-    const { cartState,userId ,dispatch} = cartContext;
+    const {cartState,userId ,dispatch,isRender, setIsRender} = cartContext;
     const [paidFor, setPaidFor] = useState(false);
     const [error, setError] = useState(null);
     console.log(cartState)
@@ -22,6 +22,7 @@ const PaypalCheckoutButton = () => {
                         carts : []
                     }
                 })
+                setIsRender(!isRender)
                 await Swal.fire({
                     icon: 'success',
                     title: 'Thanh toán thành công!',

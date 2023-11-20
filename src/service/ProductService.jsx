@@ -1,5 +1,17 @@
 import axios from "axios";
 
+export const getProductByCategory =async (id) => {
+    const res = await axios.get(`http://localhost:8080/product/categoryByProduct/${id}`)
+    return res;
+};
+
+
+export const getProduct = async (idProduct) => {
+    const res = await axios.get(`http://localhost:8080/product/detail/${idProduct}`)
+    return res;
+};
+
+
 export const confirmOrder = async (userId) => {
     try {
         const res = await axios.post(`http://localhost:8080/order/payment/${userId}`)

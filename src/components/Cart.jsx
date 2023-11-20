@@ -12,9 +12,8 @@ import Swal from "sweetalert2";
 
 function Cart() {
     const [hasResult, setHasResult] = useState(false);
-    const [isRender, setIsRender] = useState(false);
     const cartContext = useContext(CartContext);
-    const { cartState, userId, dispatch } = cartContext;
+    const { cartState, userId, dispatch,isRender,setIsRender } = cartContext;
     console.log(cartState)
     const getAllCart = async () => {
         try {

@@ -53,6 +53,8 @@ const cartReducer = (state,action) => {
 export const CartProvider = ({children}) => {
     const [ cartState,dispatch ] = useReducer(cartReducer,{cartItem :[]});
     const [userId, setUserId] = useState("");
+    const [isRender, setIsRender] = useState(false);
+
 
     const getCartUser =async (id) => {
         const res = await productService.getAllCart(id);
@@ -76,7 +78,7 @@ export const CartProvider = ({children}) => {
         getUserId();
     }, [cartReducer]);
 
-    return <CartContext.Provider value={{cartState,dispatch,userId}}>
+    return <CartContext.Provider value={{cartState,dispatch,userId,isRender,setIsRender}}>
         {children}
     </CartContext.Provider>
 }

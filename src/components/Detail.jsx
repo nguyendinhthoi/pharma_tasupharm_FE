@@ -1,233 +1,309 @@
-import React from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import Header from "./Header.jsx";
 import Footer from "./Footer.jsx";
-import {Link} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
+import * as productService from "../service/ProductService.jsx"
+import {BsCart, BsChevronDown, BsChevronUp, BsEye} from "react-icons/bs";
+import {debounce} from 'lodash';
+import {Swiper, SwiperSlide} from "swiper/react";
+import {Autoplay, FreeMode, Pagination} from "swiper/modules";
+import {toast} from "react-toastify";
+import {CartContext} from "../context/Context.jsx";
 
 function Detail() {
+    const {userId,dispatch} = useContext(CartContext);
+    const idProduct = useParams().idProduct;
+    const [product, setProduct] = useState(null);
+    const [images, setImages] = useState([]);
+    const [selectedImage, setSelectedImage] = useState("");
+    const [showFullDetails, setShowFullDetails] = useState(false);
+    const [productByCategory, setProductByCategory] = useState([]);
+    const navigate = useNavigate();
+    const getProductByCategory =async (id) => {
+        try {
+            const res = await productService.getProductByCategory(id);
+            if (res.status === 200){
+                setProductByCategory(res.data);
+            }
+        }catch (e){
+            setProductByCategory([]);
+        }
+    };
+    const getProduct = async () => {
+        try {
+            const res = await productService.getProduct(idProduct);
+            if (res.status === 200){
+                setProduct(res.data.product);
+                setImages(res.data.images);
+                setSelectedImage(res.data.images[0].name)
+                getProductByCategory(res.data.product.category.id);
+            }else {
+                setProduct(null);
+                console.log("lỗi lấy data")
+            }
+        }catch (e){
+            setProduct(null);
+            console.log("lỗi lấy data")
+        }
+    };
+    useEffect(() => {
+        getProduct();
+    }, [idProduct]);
+    const chooseImage = (index) => {
+        setSelectedImage(images[index].name)
+    };
+    const toggleDetails =debounce (() => {
+        setShowFullDetails(false);
+    },300);
+    const handleScrollToDiv = () => {
+        const targetDiv = document.getElementById('targetDiv');
+        if (targetDiv) {
+            const targetOffset = targetDiv.offsetTop - 25; // Khoảng cách từ phía trên
+            window.scrollTo({top: targetOffset, behavior: 'smooth'});
+        }
+    };
+
+    const getDefaultToDiv = () => {
+        toggleDetails();
+        handleScrollToDiv();
+    }
+    const getIntoCart = (product) => {
+        console.log(product)
+        if (!userId){
+            navigate("/login")
+            toast("Bạn phải đăng nhập trước khi thêm vào giỏ hàng")
+        }else {
+            dispatch({type : 'ADD_TO_CART',
+                payload :
+                    {
+                        idUser : userId,
+                        item : product
+                    }
+            })
+            toast("Đã thêm sản phẩm vào giỏ hàng")
+        }
+    };
+    console.log(productByCategory)
     return (
+        product &&
         <>
-            <Header></Header>
+            <Header />
+            <div className="bg-light py-3">
+                <div className="container">
+                    <div className="row">
+                        <div className="col-md-12 mb-0">
+                            <Link to={"/"}>Trang chủ</Link> <span className="mx-2 mb-0">/</span>{" "}
+                            <Link to="/shop">Cửa hàng</Link> <span className="mx-2 mb-0">/</span>{" "}
+                            <Link to={`/category:${product.category.id}`}>{product.category.name}</Link> <span className="mx-2 mb-0">/</span>{" "}
+                            <strong className="text-black">{product.name}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="site-section">
+                <div className="container">
+                    <div className="row">
+                        <div className="col-md-5">
+                            <div className="border text-center">
+                                <img
+                                    src={selectedImage}
+                                    alt="Image"
+                                    className="img-fluid p-5"
+                                    style={{ width: "100%", height: "auto" }}
+                                />
+                            </div>
+                            <div className="row mt-4">
+                                <div className="col-md-12">
+                                    { images && images.map((image,index)=>(
+                                        <img key={index} src={image.name} alt={"Small Image "+ {index}} className="img-thumbnail"
+                                             style={{ width: "25%", height: "auto" }}  onClick={() => chooseImage(index)}/>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="col-md-7">
+                            <h2 className="text-black" id="targetDiv">{product.name}</h2>
+                            <p>
+                                {product.description}
+                            </p>
+                            <p>
+                                {product.priceSale != null ? (
+                                    <>
+                                        <del className="mx-2">{product.price.toLocaleString('vi-VN', {
+                                            style: 'currency',
+                                            currency: 'VND'
+                                        })}</del>
+                                        <strong className="text-primary h4">
+                                            {product.priceSale.toLocaleString('vi-VN', {
+                                                style: 'currency',
+                                                currency: 'VND'
+                                            })}
+                                        </strong>
+                                    </>
+                                ):(
+                                    <>
+                                        <strong className="text-primary h4">
+                                            {product.price.toLocaleString('vi-VN', {
+                                                style: 'currency',
+                                                currency: 'VND'
+                                            })}
+                                        </strong>
+                                    </>
+                                )
+                                }
+                            </p>
+
+
+                            <p>
+                                <button
+                                    className="btn btn-sm height-auto px-4 py-3 btn-primary"
+                                    onClick={()=> getIntoCart(product)}
+                                >
+                                    Thêm vào giỏ hàng
+                                </button>
+                            </p>
+                            <div className="mt-5">
+                                <div>
+                                    <strong>Thành phần</strong>
+                                </div>
+                                <p style={{ whiteSpace: 'pre-line' }}>{product.ingredients}</p>
+                                <div>
+                                    <strong>Công dụng</strong>
+                                </div>
+                                <p style={{ whiteSpace: 'pre-line' }}>{product.medicalUses}</p>
+
+                                {!showFullDetails ? (
+                                    <>
+
+                                        <div className="text-center">
+                                            <button className="btn btn-link text-center" onClick={() =>setShowFullDetails(true)}>
+                                                Xem thêm <BsChevronDown />
+                                            </button>
+                                        </div>
+
+                                    </>
+                                ) : (
+                                    <>
+                                        <div>
+                                            <strong>Cách dùng – liều dùng</strong>
+                                        </div>
+                                        <p style={{ whiteSpace: 'pre-line' }}>{product.howToUse}</p>
+                                        <div>
+                                            <strong>Đối tượng sử dụng</strong>
+                                        </div>
+                                        <p style={{ whiteSpace: 'pre-line' }}>{product.intendedUsers}</p>
+                                        <div>
+                                            <strong>Lưu ý</strong>
+                                        </div>
+                                        <p style={{ whiteSpace: 'pre-line' }}>{product.precautions}</p>
+                                        <strong>Bảo quản : </strong>
+                                        <p className="d-inline-block">{product.storage}</p>
+                                        <div>
+                                            <strong>Quy cách đóng gói : </strong>
+                                            <p className="d-inline-block" style={{ whiteSpace: 'pre-line' }}>{product.packaging}</p>
+                                        </div>
+                                        <div>
+                                            <strong>Sản xuất bởi : </strong>
+                                            <p className="d-inline-block" style={{ whiteSpace: 'pre-line' }}>{product.manufacturedBy}</p>
+                                        </div>
+                                        <div>
+                                            <strong>Cơ sở phân phối : </strong>
+                                            <p className="d-inline-block" style={{ whiteSpace: 'pre-line' }}>{product.distributionFacility}</p>
+                                        </div>
+                                        <strong >{product.caution}</strong>
+                                        <div className="text-center">
+                                            <button className="btn btn-link " onClick={getDefaultToDiv}>
+                                                Thu gọn <BsChevronUp />
+                                            </button>
+                                        </div>
+
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {productByCategory &&
             <>
-                <div className="bg-light py-3">
+                <div className="site-section bg-light">
                     <div className="container">
                         <div className="row">
-                            <div className="col-md-12 mb-0">
-                                <Link to={"/"}>Home</Link> <span className="mx-2 mb-0">/</span>{" "}
-                                <a href="shop.html">Store</a> <span className="mx-2 mb-0">/</span>{" "}
-                                <strong className="text-black">Ibuprofen Tablets, 200mg</strong>
+                            <div className="title-section text-center col-12">
+                                <h2 className="text-uppercase">Sản phẩm cùng loại</h2>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="site-section">
-                    <div className="container">
-                        <div className="row">
-                            <div className="col-md-5 mr-auto">
-                                <div className="border text-center">
-                                    <img
-                                        src="../../public/images/product_07_large.png"
-                                        alt="Image"
-                                        className="img-fluid p-5"
-                                    />
-                                </div>
-                            </div>
-                            <div className="col-md-6">
-                                <h2 className="text-black">Ibuprofen Tablets, 200mg</h2>
-                                <p>
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur,
-                                    vitae, explicabo? Incidunt facere, natus soluta dolores iusto!
-                                    Molestiae expedita veritatis nesciunt doloremque sint asperiores
-                                    fuga voluptas, distinctio, aperiam, ratione dolore.
-                                </p>
-                                <p>
-                                    <del>$95.00</del>{" "}
-                                    <strong className="text-primary h4">$55.00</strong>
-                                </p>
-                                <div className="mb-5">
-                                    <div className="input-group mb-3" style={{ maxWidth: 220 }}>
-                                        <div className="input-group-prepend">
-                                            <button
-                                                className="btn btn-outline-primary js-btn-minus"
-                                                type="button"
-                                            >
-                                                −
-                                            </button>
-                                        </div>
-                                        <input
-                                            type="text"
-                                            className="form-control text-center"
-                                            defaultValue={1}
-                                            placeholder=""
-                                            aria-label="Example text with button addon"
-                                            aria-describedby="button-addon1"
-                                        />
-                                        <div className="input-group-append">
-                                            <button
-                                                className="btn btn-outline-primary js-btn-plus"
-                                                type="button"
-                                            >
-                                                +
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <p>
-                                    <Link
-                                        className="buy-now btn btn-sm height-auto px-4 py-3 btn-primary"
-                                     to={"/cart"}>
-                                        Add To Cart
-                                    </Link>
-                                </p>
-                                <div className="mt-5">
-                                    <ul
-                                        className="nav nav-pills mb-3 custom-pill"
-                                        id="pills-tab"
-                                        role="tablist"
+                            <div className="col-lg-12">
+                                <div className="d-flex justify-content-center align-items-center">
+                                    <Swiper
+                                        slidesPerView={3}
+                                        spaceBetween={30}
+                                        freeMode={true}
+                                        autoplay={{
+                                            delay: 2000,
+                                            disableOnInteraction: false,
+                                        }}
+                                        pagination={{
+                                            clickable: true,
+                                        }}
+                                        modules={[FreeMode, Pagination, Autoplay]}
+                                        className="mySwiper"
                                     >
-                                        <li className="nav-item">
-                                            <a
-                                                className="nav-link active"
-                                                id="pills-home-tab"
-                                                data-toggle="pill"
-                                                href="#pills-home"
-                                                role="tab"
-                                                aria-controls="pills-home"
-                                                aria-selected="true"
-                                            >
-                                                Ordering Information
-                                            </a>
-                                        </li>
-                                        <li className="nav-item">
-                                            <a
-                                                className="nav-link"
-                                                id="pills-profile-tab"
-                                                data-toggle="pill"
-                                                href="#pills-profile"
-                                                role="tab"
-                                                aria-controls="pills-profile"
-                                                aria-selected="false"
-                                            >
-                                                Specifications
-                                            </a>
-                                        </li>
-                                    </ul>
-                                    <div className="tab-content" id="pills-tabContent">
-                                        <div
-                                            className="tab-pane fade show active"
-                                            id="pills-home"
-                                            role="tabpanel"
-                                            aria-labelledby="pills-home-tab"
-                                        >
-                                            <table className="table custom-table">
-                                                <thead>
-                                                <tr>
-                                                    <th>Material</th>
-                                                    <th>Description</th>
-                                                    <th>Packaging</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr>
-                                                    <th scope="row">OTC022401</th>
-                                                    <td>
-                                                        Pain Management: Acetaminophen PM Extra-Strength
-                                                        Caplets, 500 mg, 100/Bottle
-                                                    </td>
-                                                    <td>1 BT</td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">OTC022401</th>
-                                                    <td>
-                                                        Pain Management: Acetaminophen PM Extra-Strength
-                                                        Caplets, 500 mg, 100/Bottle
-                                                    </td>
-                                                    <td>144/CS</td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">OTC022401</th>
-                                                    <td>
-                                                        Pain Management: Acetaminophen PM Extra-Strength
-                                                        Caplets, 500 mg, 100/Bottle
-                                                    </td>
-                                                    <td>1 EA</td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div
-                                            className="tab-pane fade"
-                                            id="pills-profile"
-                                            role="tabpanel"
-                                            aria-labelledby="pills-profile-tab"
-                                        >
-                                            <table className="table custom-table">
-                                                <tbody>
-                                                <tr>
-                                                    <td>HPIS CODE</td>
-                                                    <td className="bg-light">999_200_40_0</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>HEALTHCARE PROVIDERS ONLY</td>
-                                                    <td className="bg-light">No</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>LATEX FREE</td>
-                                                    <td className="bg-light">Yes, No</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>MEDICATION ROUTE</td>
-                                                    <td className="bg-light">Topical</td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
+                                        {
+                                            productByCategory.map((item, index) =>
+                                                <SwiperSlide key={index} className="t-item">
+                                                    <div>
+                                                        <div className="position-relative">
+                                                            <img src={item.image} alt="Image" className="img-fluid" />
+                                                            <div className="t-icons-overlay">
+                                                                <Link to={`/detail/${item.id}`} className="t-icon-link">
+                                                                    <BsEye className="t-icon" />
+                                                                </Link>
+                                                                <a className="t-icon-link" role="button"
+                                                                   onClick={()=> getIntoCart(item)}>
+                                                                    <BsCart className="t-icon"/>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                        <div className="text-center mb-5">
+                                                            <h4 id="card-title" title={item.name}>{item.name}</h4>
+                                                            <span>
+                                                               {item.priceSale != null ? (
+                                                                   <>
+                                                                       <del className="mx-2">{item.price.toLocaleString('vi-VN', {
+                                                                           style: 'currency',
+                                                                           currency: 'VND'
+                                                                       })}</del>
+                                                                       {item.priceSale.toLocaleString('vi-VN', {
+                                                                           style: 'currency',
+                                                                           currency: 'VND'
+                                                                       })}
+                                                                   </>
+                                                               ):(
+                                                                   <>
+                                                                       {item.price.toLocaleString('vi-VN', {
+                                                                           style: 'currency',
+                                                                           currency: 'VND'
+                                                                       })}
+                                                                   </>
+                                                               )
+                                                               }
+                                                        </span>
+                                                        </div>
+                                                    </div>
+                                                </SwiperSlide>
+                                            )
+                                        }
+                                    </Swiper>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div
-                    className="site-section bg-secondary bg-image"
-                    style={{ backgroundImage: 'url("../../public/images/bg_2.jpg")' }}
-                >
-                    <div className="container">
-                        <div className="row align-items-stretch">
-                            <div className="col-lg-6 mb-5 mb-lg-0">
-                                <a
-                                    href="#"
-                                    className="banner-1 h-100 d-flex"
-                                    style={{ backgroundImage: 'url("../../public/images/bg_1.jpg")' }}
-                                >
-                                    <div className="banner-1-inner align-self-center">
-                                        <h2>Pharma Products</h2>
-                                        <p>
-                                            Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                                            Molestiae ex ad minus rem odio voluptatem.
-                                        </p>
-                                    </div>
-                                </a>
-                            </div>
-                            <div className="col-lg-6 mb-5 mb-lg-0">
-                                <a
-                                    href="#"
-                                    className="banner-1 h-100 d-flex"
-                                    style={{ backgroundImage: 'url("../../public/images/bg_2.jpg")' }}
-                                >
-                                    <div className="banner-1-inner ml-auto  align-self-center">
-                                        <h2>Rated by Experts</h2>
-                                        <p>
-                                            Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                                            Molestiae ex ad minus rem odio voluptatem.
-                                        </p>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
             </>
-            <Footer></Footer>
+            }
+            <Footer />
         </>
     );
 }
