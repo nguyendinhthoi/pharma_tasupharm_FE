@@ -69,6 +69,7 @@ function Detail() {
     }
     const getIntoCart = (product) => {
         console.log(product)
+        console.log(userId)
         if (!userId){
             navigate("/login")
             toast("Bạn phải đăng nhập trước khi thêm vào giỏ hàng")
@@ -256,7 +257,7 @@ function Detail() {
                                                         <div className="position-relative">
                                                             <img src={item.image} alt="Image" className="img-fluid" />
                                                             <div className="t-icons-overlay">
-                                                                <Link to={`/detail/${item.id}`} className="t-icon-link">
+                                                                <Link to={`/detail/${item.id}`} className="t-icon-link" onClick={getDefaultToDiv}>
                                                                     <BsEye className="t-icon" />
                                                                 </Link>
                                                                 <a className="t-icon-link" role="button"

@@ -12,12 +12,11 @@ import {AiFillDelete} from "react-icons/ai";
 
 function Header() {
     const [userName, setUserName] = useState("");
-    const [userId, setUserId] = useState("");
     const [categories, setCategories] = useState([]);
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [searchName, setSearchName] = useState("");
     const navigate = useNavigate();
-    const {cartState,dispatch} = useContext(CartContext);
+    const {cartState,dispatch,userId,setUserId} = useContext(CartContext);
     const {cartItem} = cartState;
     const getUserId = async () => {
         const jwtToken = loginService.getJwtToken();
@@ -56,7 +55,7 @@ function Header() {
     const handleLogout = () => {
         localStorage.removeItem("JWT");
         setUserName(undefined);
-        setUserId(undefined)
+        setUserId(undefined);
         navigate("/")
         toast("Đăng xuất thành công");
     };

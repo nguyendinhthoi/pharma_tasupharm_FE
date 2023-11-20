@@ -78,7 +78,7 @@ export const CartProvider = ({children}) => {
         getUserId();
     }, [cartReducer]);
 
-    return <CartContext.Provider value={{cartState,dispatch,userId,isRender,setIsRender}}>
+    return <CartContext.Provider value={{cartState,dispatch,userId,setUserId,isRender,setIsRender}}>
         {children}
     </CartContext.Provider>
 }

@@ -55,11 +55,11 @@ function Login() {
     const handleLogin = async (values) => {
         try {
             const res = await loginService.login(values);
-            console.log(res)
+            window.history.back();
+            const tempURL = window.location.href;
             loginService.addJwtTokenToLocalStorage(res.data.jwtToken);
-            const tempURL = localStorage.getItem("tempURL");
-            console.log(tempURL)
-            localStorage.removeItem("tempURL");
+            // const tempURL = localStorage.getItem("tempURL");
+            // localStorage.removeItem("tempURL");
             if (res.status === 200) {
                 if (tempURL) {
                     navigate(tempURL);
