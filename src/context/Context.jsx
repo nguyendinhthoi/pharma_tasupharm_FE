@@ -1,12 +1,18 @@
 import {createContext, useEffect, useReducer, useState} from "react";
 import * as loginService from "../service/LoginService.jsx";
 import * as productService from "../service/ProductService.jsx";
+import {toast} from "react-toastify";
 
 
 export const CartContext = createContext({});
 const cartReducer = (state,action) => {
     const getIntoCart = async (idUser, idProduct) => {
-        await productService.addToCart(idProduct,idUser)
+        try {
+           await productService.addToCart(idProduct,idUser);
+           toast("Bạn đã thêm mới sản phẩm thành công")
+        }catch (e){
+            toast("Sản phẩm đã có trong giỏ hàng")
+        }
     };
     const removeFromCart = async (idUser,idProduct) => {
         await productService.deleteProduct(idUser,idProduct)
@@ -21,13 +27,13 @@ const cartReducer = (state,action) => {
                 cartItem : action.payload.carts
             };
         case 'ADD_TO_CART':
+            getIntoCart(action.payload.idUser,action.payload.item.id);
             const existingItem = state.cartItem.find(item => (item.idProduct ? item.idProduct : item.id) === action.payload.item.id);
             if (existingItem) {
                 return {
                     ...state,
                 };
             }
-            getIntoCart(action.payload.idUser,action.payload.item.id);
             return {
                 ...state,
                 cartItem : [...state.cartItem,action.payload.item],

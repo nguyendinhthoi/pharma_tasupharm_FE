@@ -58,10 +58,13 @@ function ListSearchHome() {
     useEffect(() => {
         getAllSearchName()
     }, [newSearchName,currentPage]);
+    useEffect(() => {
+        setCurrentPage(0);
+    }, [newSearchName]);
     const handlePageClick = (event) => {
-        setCurrentPage(+event.selected);
+        const selectedPage = +event.selected;
+        setCurrentPage(selectedPage);
     };
-
 
     return (
         <>
@@ -119,27 +122,29 @@ function ListSearchHome() {
                     </div>
                 </div>
             </div>
-                <ReactPaginate
-                    breakLabel="..."
-                    nextLabel="sau >"
-                    onPageChange={handlePageClick}
-                    pageCount={totalPage}
-                    previousLabel="< trước"
-                    renderOnZeroPageCount={false}
-                    marginPagesDisplayed={1}
-                    pageRangeDisplayed={3}
+            <ReactPaginate
+                breakLabel="..."
+                nextLabel="sau >"
+                onPageChange={handlePageClick}
+                pageCount={totalPage}
+                forcePage={currentPage}
+                previousLabel="< trước"
+                renderOnZeroPageCount={false}
+                marginPagesDisplayed={1}
+                pageRangeDisplayed={3}
 
-                    containerClassName={"pagination justify-content-center"}
-                    previousClassName={"page-item"}
-                    previousLinkClassName={"page-link"}
-                    pageClassName={"page-item"}
-                    pageLinkClassName={"page-link"}
-                    nextClassName={"page-item"}
-                    nextLinkClassName={"page-link"}
-                    breakClassName={"page-item"}
-                    breakLinkClassName={"page-link"}
-                    activeClassName={"active"}
-                />
+                containerClassName={"pagination justify-content-center"}
+                previousClassName={"page-item"}
+                previousLinkClassName={"page-link"}
+                pageClassName={"page-item"}
+                pageLinkClassName={"page-link"}
+                nextClassName={"page-item"}
+                nextLinkClassName={"page-link"}
+                breakClassName={"page-item"}
+                breakLinkClassName={"page-link"}
+                activeClassName={"active"}
+            />
+
             <Footer/>
         </>
     );

@@ -32,18 +32,19 @@ function Detail() {
     const getProduct = async () => {
         try {
             const res = await productService.getProduct(idProduct);
+            console.log(res)
             if (res.status === 200){
                 setProduct(res.data.product);
                 setImages(res.data.images);
                 setSelectedImage(res.data.images[0].name)
-                getProductByCategory(res.data.product.category.id);
+                getProductByCategory(res.data.product.idCategory);
             }else {
                 setProduct(null);
-                console.log("lỗi lấy data")
+                console.log("lỗi lấy data1")
             }
         }catch (e){
             setProduct(null);
-            console.log("lỗi lấy data")
+            console.log("lỗi lấy data2")
         }
     };
     useEffect(() => {
@@ -52,7 +53,7 @@ function Detail() {
     const chooseImage = (index) => {
         setSelectedImage(images[index].name)
     };
-    const toggleDetails =debounce (() => {
+    const toggleDetails = debounce (() => {
         setShowFullDetails(false);
     },300);
     const handleScrollToDiv = () => {
@@ -68,8 +69,6 @@ function Detail() {
         handleScrollToDiv();
     }
     const getIntoCart = (product) => {
-        console.log(product)
-        console.log(userId)
         if (!userId){
             navigate("/login")
             toast("Bạn phải đăng nhập trước khi thêm vào giỏ hàng")
@@ -81,10 +80,8 @@ function Detail() {
                         item : product
                     }
             })
-            toast("Đã thêm sản phẩm vào giỏ hàng")
         }
     };
-    console.log(productByCategory)
     return (
         product &&
         <>
@@ -95,7 +92,7 @@ function Detail() {
                         <div className="col-md-12 mb-0">
                             <Link to={"/"}>Trang chủ</Link> <span className="mx-2 mb-0">/</span>{" "}
                             <Link to="/shop">Cửa hàng</Link> <span className="mx-2 mb-0">/</span>{" "}
-                            <Link to={`/category:${product.category.id}`}>{product.category.name}</Link> <span className="mx-2 mb-0">/</span>{" "}
+                            <Link to={`/category/${product.idCategory}`}>{product.nameCategory}</Link> <span className="mx-2 mb-0">/</span>{" "}
                             <strong className="text-black">{product.name}</strong>
                         </div>
                     </div>

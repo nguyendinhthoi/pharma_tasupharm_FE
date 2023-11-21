@@ -18,6 +18,7 @@ function Header() {
     const navigate = useNavigate();
     const {cartState,dispatch,userId,setUserId} = useContext(CartContext);
     const {cartItem} = cartState;
+    console.log(cartItem)
     const getUserId = async () => {
         const jwtToken = loginService.getJwtToken();
         const user = await loginService.getUser(jwtToken.sub)
@@ -128,7 +129,9 @@ function Header() {
                                             <a href="#">Danh mục</a>
                                             <ul className="dropdown">
                                                 {categories.map((category, index) =>
-                                                    <li className="mb-4" key={index}>{category.name}</li>
+                                                    <Link key={index} to={`/category/${category.id}`}>
+                                                        <li className="mb-4">{category.name}</li>
+                                                    </Link>
                                                 )}
                                             </ul>
                                         </li>

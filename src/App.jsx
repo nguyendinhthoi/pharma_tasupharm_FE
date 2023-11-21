@@ -13,6 +13,7 @@ import "../src/css/magnific-popup.css"
 import "../src/css/aos.css"
 import "../src/css/style.css"
 import {PayPalScriptProvider} from "@paypal/react-paypal-js";
+import Categories from "./components/Categories.jsx";
 
 function App() {
 
@@ -25,6 +26,8 @@ function App() {
           <Route path="/detail/:idProduct" element={<Detail/>}></Route>
           <Route path="/cart" element={<Cart/>}></Route>
           <Route path="/listSearchHome/:searchName" element={<ListSearchHome/>}></Route>
+          <Route path="/category/:id" element={<Categories/>}></Route>
+
         </Routes>
           <ToastContainer></ToastContainer>
           </PayPalScriptProvider>

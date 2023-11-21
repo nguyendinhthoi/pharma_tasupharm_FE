@@ -47,14 +47,13 @@ function Home() {
             navigate("/login")
             toast("Bạn phải đăng nhập trước khi thêm vào giỏ hàng")
         }else {
-            dispatch({type : 'ADD_TO_CART',
-                payload :
-                    {
-                        idUser : userId,
-                        item : product
-                    }
-            })
-            toast("Đã thêm sản phẩm vào giỏ hàng")
+                dispatch({type : 'ADD_TO_CART',
+                    payload :
+                        {
+                            idUser : userId,
+                            item : product
+                        }
+                })
         }
     };
     return (

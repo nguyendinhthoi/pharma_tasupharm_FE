@@ -1,5 +1,11 @@
 import axios from "axios";
 
+export const getAllProductByCategory =async (idCategory, currentPage) => {
+    const res = await axios.get(`http://localhost:8080/product/category/${idCategory}?page=${currentPage}`)
+    return res;
+};
+
+
 export const getProductByCategory =async (id) => {
     const res = await axios.get(`http://localhost:8080/product/categoryByProduct/${id}`)
     return res;
