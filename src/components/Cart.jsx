@@ -10,9 +10,11 @@ import PaypalCheckoutButton from "./PaypalCheckoutButton.jsx";
 import {toast} from "react-toastify";
 import Swal from "sweetalert2";
 
+
 function Cart() {
     const [hasResult, setHasResult] = useState(false);
     const cartContext = useContext(CartContext);
+    const [quantity, setQuantity] = useState([]);
     const { cartState, userId, dispatch,isRender,setIsRender } = cartContext;
     console.log(cartState)
     const getAllCart = async () => {
@@ -25,6 +27,9 @@ function Cart() {
                         carts : res.data
                     }
             })
+            const initialQuantities = res.data.map(quantity => quantity.quantity);
+            setQuantity(initialQuantities);
+            console.log(initialQuantities)
             if (res.status === 200){
                 console.log("Lấy dữ liệu thành công")
             }else {
@@ -52,35 +57,33 @@ function Cart() {
             setIsRender(!isRender);
         }
     };
-    const increaseButton = (idProduct) => {
-        console.log(idProduct)
-        if (userId){
-            const product = cartState.cartItem.find((item) => item.idProduct === idProduct)
-            const newQuantity = product.quantity + 1;
-            console.log(newQuantity)
+    const increaseButton = (index) => {
+        if (cartState.cartItem[index]){
+            const newQuantity = [...quantity];
+            newQuantity[index] = quantity[index] + 1;
+            setQuantity(newQuantity)
             dispatch({
                 type : 'UPDATE_QUANTITY',
                 payload :
                     {
                         idUser : userId,
-                        idProduct : idProduct,
-                        newQuantity : newQuantity
+                        idProduct : cartState.cartItem[index].idProduct,
+                        newQuantity : newQuantity[index]
                     }
             })
             setIsRender(!isRender);
         }
     };
-    const decreaseButton = (idProduct) => {
-        console.log(idProduct);
-        if (userId) {
-            const product = cartState.cartItem.find((item) => item.idProduct === idProduct);
-            const newQuantity = Math.max(1, product.quantity - 1);
+    const decreaseButton = (index) => {
+        if (cartState.cartItem[index]) {
+            const newQuantity = [...quantity];
+            newQuantity[index] = Math.max(1, newQuantity[index] - 1);
             dispatch({
                 type: 'UPDATE_QUANTITY',
                 payload: {
                     idUser: userId,
-                    idProduct: idProduct,
-                    newQuantity: newQuantity
+                    idProduct: cartState.cartItem[index].idProduct,
+                    newQuantity: newQuantity[index]
                 }
             });
             setIsRender(!isRender);
@@ -167,23 +170,46 @@ function Cart() {
                                                             <button
                                                                 className="btn btn-outline-primary js-btn-minus"
                                                                 type="button"
-                                                                onClick={() => decreaseButton(item.idProduct)}
+                                                                onClick={() => decreaseButton(index)}
                                                             >
                                                                 −
                                                             </button>
                                                             <input
                                                                 type="text"
                                                                 className="form-control text-center"
-                                                                value={item.quantity}
+                                                                value={quantity[index]}
                                                                 placeholder=""
                                                                 aria-label="Example text with button addon"
                                                                 aria-describedby="button-addon1"
                                                                 style={{ textAlign: 'center' }}
+                                                                onChange={event => {
+                                                                    const newQuantity = [...quantity]
+                                                                    const quantityChosen = parseInt(event.target.value);
+                                                                    if (isNaN(quantityChosen) || quantityChosen <= 0) {
+                                                                        // Nếu không phải là số hoặc số nhỏ hơn hoặc bằng 0, thì đặt là 1
+                                                                        newQuantity[index] = 1;
+                                                                    } else if (quantityChosen <= item.maxQuantity) {
+                                                                        // Nếu là số và nhỏ hơn hoặc bằng maxQuantity, thì sử dụng giá trị nhập vào
+                                                                        newQuantity[index] = quantityChosen;
+                                                                    } else {
+                                                                        // Nếu là số và lớn hơn maxQuantity, thì đặt là maxQuantity
+                                                                        newQuantity[index] = item.maxQuantity;
+                                                                    }
+                                                                    setQuantity(newQuantity)
+                                                                    dispatch({
+                                                                        type: 'UPDATE_QUANTITY',
+                                                                        payload: {
+                                                                            idUser: userId,
+                                                                            idProduct: cartState.cartItem[index].idProduct,
+                                                                            newQuantity: newQuantity[index]
+                                                                        }
+                                                                    });
+                                                                }}
                                                             />
                                                             <button
                                                                 className="btn btn-outline-primary js-btn-plus"
                                                                 type="button"
-                                                                onClick={() => increaseButton(item.idProduct)}
+                                                                onClick={() => increaseButton(index)}
                                                                 disabled={item.quantity >= item.maxQuantity}
                                                             >
                                                                 +

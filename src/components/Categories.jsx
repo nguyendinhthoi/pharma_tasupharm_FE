@@ -6,7 +6,6 @@ import ReactPaginate from "react-paginate";
 import Footer from "./Footer.jsx";
 import {CartContext} from "../context/Context.jsx";
 import * as productService from "../service/ProductService.jsx";
-import * as loginService from "../service/LoginService.jsx";
 import {toast} from "react-toastify";
 
 function Categories() {
@@ -60,6 +59,9 @@ function Categories() {
     return (
         <>
             <Header/>
+            <select name="">
+                <option value="">100.000đ-200.000đ</option>
+            </select>
             <div className="site-section">
                 <div className="container">
                     <div className="row">

@@ -71,6 +71,7 @@ function Detail() {
     const getIntoCart = (product) => {
         if (!userId){
             navigate("/login")
+            localStorage.setItem("tempURL",window.location.pathname);
             toast("Bạn phải đăng nhập trước khi thêm vào giỏ hàng")
         }else {
             dispatch({type : 'ADD_TO_CART',
