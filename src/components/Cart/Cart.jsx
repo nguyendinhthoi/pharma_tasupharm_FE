@@ -1,11 +1,11 @@
 import React, {useContext, useEffect, useState} from 'react';
 
 import {Link} from "react-router-dom";
-import * as productService from "../service/ProductService.jsx"
+import * as productService from "../../service/ProductService.jsx"
 import {FaTimes} from "react-icons/fa";
-import Header from "./Header.jsx";
-import Footer from "./Footer.jsx";
-import {CartContext} from "../context/Context.jsx";
+import Header from "../Header/Header.jsx";
+import Footer from "../Footer/Footer.jsx";
+import {CartContext} from "../Context/Context.jsx";
 import PaypalCheckoutButton from "./PaypalCheckoutButton.jsx";
 import {toast} from "react-toastify";
 import Swal from "sweetalert2";

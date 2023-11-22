@@ -1,14 +1,14 @@
 import React, {useContext, useEffect, useState} from 'react';
-import Header from "./Header.jsx";
-import Footer from "./Footer.jsx";
+import Header from "../Header/Header.jsx";
+import Footer from "../Footer/Footer.jsx";
 import {Link, useNavigate, useParams} from "react-router-dom";
-import * as productService from "../service/ProductService.jsx"
+import * as productService from "../../service/ProductService.jsx"
 import ReactPaginate from "react-paginate";
-import "../css/style.css"
+import "../../css/style.css"
 import {BsCart, BsEye} from "react-icons/bs";
-import * as loginService from "../service/LoginService.jsx";
+import * as loginService from "../../service/LoginService.jsx";
 import {toast} from "react-toastify";
-import {CartContext} from "../context/Context.jsx";
+import {CartContext} from "../Context/Context.jsx";
 
 
 function ListSearchHome() {
@@ -55,8 +55,16 @@ function ListSearchHome() {
             })
         }
     };
+    const handleScrollToDiv = () => {
+        const targetDiv = document.getElementById('targetDiv');
+        if (targetDiv) {
+            const targetOffset = targetDiv.offsetTop - 25; // Khoảng cách từ phía trên
+            window.scrollTo({top: targetOffset, behavior: 'smooth'});
+        }
+    };
     useEffect(() => {
-        getAllSearchName()
+        getAllSearchName();
+        handleScrollToDiv();
     }, [newSearchName,currentPage]);
     useEffect(() => {
         setCurrentPage(0);
@@ -69,7 +77,7 @@ function ListSearchHome() {
     return (
         <>
             <Header/>
-            <div className="site-section">
+            <div className="site-section" id="targetDiv">
                 <div className="container">
                     <div className="row">
                 {
@@ -82,7 +90,7 @@ function ListSearchHome() {
                             <div className="position-relative">
                                 <img src={item.image} alt="Image" className="img-fluid" />
                                 <div className="t-icons-overlay">
-                                    <Link to={`/detail/${item.idCategory}/${item.id}`} className="t-icon-link">
+                                    <Link to={`/detail/${item.id}`} className="t-icon-link">
                                         <BsEye className="t-icon" />
                                     </Link>
                                     <a className="t-icon-link" role="button"
@@ -122,29 +130,29 @@ function ListSearchHome() {
                     </div>
                 </div>
             </div>
-            <ReactPaginate
-                breakLabel="..."
-                nextLabel="sau >"
-                onPageChange={handlePageClick}
-                pageCount={totalPage}
-                forcePage={currentPage}
-                previousLabel="< trước"
-                renderOnZeroPageCount={false}
-                marginPagesDisplayed={1}
-                pageRangeDisplayed={3}
-
-                containerClassName={"pagination justify-content-center"}
-                previousClassName={"page-item"}
-                previousLinkClassName={"page-link"}
-                pageClassName={"page-item"}
-                pageLinkClassName={"page-link"}
-                nextClassName={"page-item"}
-                nextLinkClassName={"page-link"}
-                breakClassName={"page-item"}
-                breakLinkClassName={"page-link"}
-                activeClassName={"active"}
-            />
-
+            {!notFound ? (
+                <ReactPaginate
+                    breakLabel="..."
+                    nextLabel="sau >"
+                    onPageChange={handlePageClick}
+                    pageCount={totalPage}
+                    forcePage={currentPage}
+                    previousLabel="< trước"
+                    renderOnZeroPageCount={false}
+                    marginPagesDisplayed={1}
+                    pageRangeDisplayed={3}
+                    containerClassName={"pagination justify-content-center"}
+                    previousClassName={"page-item"}
+                    previousLinkClassName={"page-link"}
+                    pageClassName={"page-item"}
+                    pageLinkClassName={"page-link"}
+                    nextClassName={"page-item"}
+                    nextLinkClassName={"page-link"}
+                    breakClassName={"page-item"}
+                    breakLinkClassName={"page-link"}
+                    activeClassName={"active"}
+                />
+            ) : null}
             <Footer/>
         </>
     );

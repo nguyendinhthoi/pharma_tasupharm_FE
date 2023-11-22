@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import "../css/style.css"
-import * as productService from "../service/ProductService.jsx"
+import "../../css/style.css"
+import * as productService from "../../service/ProductService.jsx"
 import {Link} from "react-router-dom";
 
 
@@ -80,7 +80,7 @@ function Footer() {
                                 {
                                     categories.map((item, index) =>
                                         <li key={index}>
-                                            <Link className="text-decoration-none" to={`/detail/${item.id}`}>
+                                            <Link className="text-decoration-none" to={`/category/${item.id}`}>
                                                 {item.name}
                                             </Link>
                                         </li>

@@ -1,14 +1,14 @@
 import React, {useContext, useEffect, useState} from 'react';
-import Header from "./Header.jsx";
-import Footer from "./Footer.jsx";
+import Header from "../Header/Header.jsx";
+import Footer from "../Footer/Footer.jsx";
 import {Link, useNavigate, useParams} from "react-router-dom";
-import * as productService from "../service/ProductService.jsx"
+import * as productService from "../../service/ProductService.jsx"
 import {BsCart, BsChevronDown, BsChevronUp, BsEye} from "react-icons/bs";
 import {debounce} from 'lodash';
 import {Swiper, SwiperSlide} from "swiper/react";
 import {Autoplay, FreeMode, Pagination} from "swiper/modules";
 import {toast} from "react-toastify";
-import {CartContext} from "../context/Context.jsx";
+import {CartContext} from "../Context/Context.jsx";
 
 function Detail() {
     const {userId,dispatch} = useContext(CartContext);

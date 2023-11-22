@@ -1,11 +1,11 @@
 import {Route, Routes} from "react-router-dom";
-import Login from "./components/Login.jsx";
-import Home from "./components/Home.jsx";
-import Detail from "./components/Detail.jsx";
-import Cart from "./components/Cart.jsx";
+import Login from "./components/Login/Login.jsx";
+import Home from "./components/Home/Home.jsx";
+import Detail from "./components/Product/Detail.jsx";
+import Cart from "./components/Cart/Cart.jsx";
 import {ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"
-import ListSearchHome from "./components/ListSearchHome.jsx";
+import ListSearchHome from "./components/Home/ListSearchHome.jsx";
 import "../src/css/owl.carousel.min.css"
 import "../src/css/owl.theme.default.min.css"
 import "../src/css/jquery-ui.css"
@@ -13,7 +13,8 @@ import "../src/css/magnific-popup.css"
 import "../src/css/aos.css"
 import "../src/css/style.css"
 import {PayPalScriptProvider} from "@paypal/react-paypal-js";
-import Categories from "./components/Categories.jsx";
+import Categories from "./components/Product/Categories.jsx";
+import Shop from "./components/Product/Shop.jsx";
 
 function App() {
 
@@ -27,7 +28,7 @@ function App() {
           <Route path="/cart" element={<Cart/>}></Route>
           <Route path="/listSearchHome/:searchName" element={<ListSearchHome/>}></Route>
           <Route path="/category/:id" element={<Categories/>}></Route>
-
+          <Route path="/shop" element={<Shop/>}></Route>
         </Routes>
           <ToastContainer></ToastContainer>
           </PayPalScriptProvider>

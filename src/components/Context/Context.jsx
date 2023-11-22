@@ -1,6 +1,6 @@
 import {createContext, useEffect, useReducer, useState} from "react";
-import * as loginService from "../service/LoginService.jsx";
-import * as productService from "../service/ProductService.jsx";
+import * as loginService from "../../service/LoginService.jsx";
+import * as productService from "../../service/ProductService.jsx";
 import {toast} from "react-toastify";
 
 

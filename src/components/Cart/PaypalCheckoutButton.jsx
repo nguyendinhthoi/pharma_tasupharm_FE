@@ -1,7 +1,7 @@
 import {PayPalButtons} from "@paypal/react-paypal-js";
 import {useContext, useState} from "react";
-import {CartContext} from "../context/Context.jsx";
-import * as productService from "../service/ProductService.jsx"
+import {CartContext} from "../Context/Context.jsx";
+import * as productService from "../../service/ProductService.jsx"
 import Swal from "sweetalert2";
 
 
@@ -14,7 +14,7 @@ const PaypalCheckoutButton = () => {
 
     const handleApprove = async () => {
         try {
-            const res = await productService.confirmOrder(userId);
+           const res = await productService.confirmOrder(userId);
             if (res.status === 200){
                 dispatch({
                     type:"SET_CART",

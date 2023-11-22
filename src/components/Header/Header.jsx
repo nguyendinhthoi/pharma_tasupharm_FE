@@ -1,13 +1,13 @@
 import React, {useContext, useEffect, useState} from 'react';
 // import "../css/style.css"
 import {Link, useNavigate} from "react-router-dom";
-import * as loginService from "../service/LoginService.jsx"
-import * as productService from "../service/ProductService.jsx"
+import * as loginService from "../../service/LoginService.jsx"
+import * as productService from "../../service/ProductService.jsx"
 import {BiSolidUserCircle} from "react-icons/bi";
 import {BsFillCartCheckFill, BsSearch} from "react-icons/bs";
 import {Dropdown} from "react-bootstrap";
 import {toast} from "react-toastify";
-import {CartContext} from "../context/Context.jsx";
+import {CartContext} from "../Context/Context.jsx";
 import {AiFillDelete} from "react-icons/ai";
 
 function Header() {
@@ -108,7 +108,7 @@ function Header() {
                             <div className="logo">
                                 <div className="site-logo">
                                     <Link className="js-logo-clone" to={"/"}>
-                                        <img style={{width: "200px", height: "auto"}} src="../../public/images/logo.jpg"
+                                        <img style={{width: "200px", height: "auto"}} src="../../../public/images/logo.jpg"
                                              alt="logo"/>
                                     </Link>
                                 </div>
@@ -123,7 +123,7 @@ function Header() {
                                             <Link to={"/"}>Trang chủ</Link>
                                         </li>
                                         <li>
-                                            <a href="shop.html">Cửa hàng</a>
+                                            <Link to={"/shop"} >Cửa hàng</Link>
                                         </li>
                                         <li className="has-children">
                                             <a href="#">Danh mục</a>

@@ -6,13 +6,13 @@ import 'swiper/css/pagination';
 import {Swiper, SwiperSlide} from "swiper/react";
 import {Autoplay, FreeMode, Pagination} from "swiper/modules";
 import {Link, useNavigate} from "react-router-dom";
-import * as productService from "../service/ProductService.jsx"
-import * as loginService from "../service/LoginService.jsx"
+import * as productService from "../../service/ProductService.jsx"
+import * as loginService from "../../service/LoginService.jsx"
 import {BsCart, BsEye} from "react-icons/bs";
 import {toast} from "react-toastify";
-import Header from "./Header.jsx";
-import Footer from "./Footer.jsx";
-import {CartContext} from "../context/Context.jsx";
+import Header from "../Header/Header.jsx";
+import Footer from "../Footer/Footer.jsx";
+import {CartContext} from "../Context/Context.jsx";
 
 function Home() {
     const [bestSellers, setBestSellers] = useState([])
@@ -71,9 +71,9 @@ function Home() {
                                     Chăm sóc sức khỏe, phục hồi niềm tin. </h2>
                                 <h1>Chào mừng đến với tasupharm</h1>
                                 <p>
-                                    <a href="#" className="btn btn-primary px-5 py-3">
+                                    <Link to={"/shop"} className="btn btn-primary px-5 py-3">
                                         Mua ngay
-                                    </a>
+                                    </Link>
                                 </p>
                             </div>
                         </div>

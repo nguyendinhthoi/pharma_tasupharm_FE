@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
-import "../css/login.css"
+import "../../css/login.css"
 import {ErrorMessage, Field, Form, Formik} from "formik";
-import * as loginService from "../service/LoginService.jsx"
+import * as loginService from "../../service/LoginService.jsx"
 import {useNavigate} from "react-router-dom";
 import {toast} from "react-toastify";
 import * as Yup from "yup";
