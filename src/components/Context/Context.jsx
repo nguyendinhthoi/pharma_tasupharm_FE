@@ -36,7 +36,7 @@ const cartReducer = (state,action) => {
             }
             return {
                 ...state,
-                cartItem : [...state.cartItem,action.payload.item],
+                cartItem : [action.payload.item,...state.cartItem],
             };
         case 'REMOVE_FROM_CART':
             removeFromCart(action.payload.idUser,action.payload.idProduct)

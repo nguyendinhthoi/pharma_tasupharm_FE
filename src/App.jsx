@@ -15,6 +15,7 @@ import "../src/css/style.css"
 import {PayPalScriptProvider} from "@paypal/react-paypal-js";
 import Categories from "./components/Product/Categories.jsx";
 import Shop from "./components/Product/Shop.jsx";
+import Customer from "./components/Customer/Customer.jsx";
 
 function App() {
 
@@ -29,6 +30,7 @@ function App() {
           <Route path="/listSearchHome/:searchName" element={<ListSearchHome/>}></Route>
           <Route path="/category/:id" element={<Categories/>}></Route>
           <Route path="/shop" element={<Shop/>}></Route>
+          <Route path="/info" element={<Customer/>}></Route>
         </Routes>
           <ToastContainer></ToastContainer>
           </PayPalScriptProvider>

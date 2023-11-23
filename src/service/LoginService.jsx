@@ -1,6 +1,13 @@
 import axios from "axios";
 import {jwtDecode} from "jwt-decode";
 
+export const editCustomer =async (value) => {
+    const res = await axios.post("http://localhost:8080/user/editInfo", value);
+    console.log(res)
+    return res;
+};
+
+
 export const register = async (values) => {
     const res = await axios.post("http://localhost:8080/user/register", values);
     console.log(res)

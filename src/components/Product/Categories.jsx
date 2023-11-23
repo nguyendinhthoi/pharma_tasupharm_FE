@@ -88,6 +88,7 @@ function Categories() {
     }, [value]);
 
 
+
     const handlePageClick = (event) => {
         setCurrentPage(+event.selected);
     };

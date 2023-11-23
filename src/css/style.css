@@ -1137,6 +1137,12 @@ a {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+.ellipsis {
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 .t-icons-overlay {
   display: flex;

@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import * as productService from "../../service/ProductService.jsx"
 import {FaTimes} from "react-icons/fa";
 import Header from "../Header/Header.jsx";
@@ -9,6 +9,7 @@ import {CartContext} from "../Context/Context.jsx";
 import PaypalCheckoutButton from "./PaypalCheckoutButton.jsx";
 import {toast} from "react-toastify";
 import Swal from "sweetalert2";
+import * as loginService from "../../service/LoginService.jsx"
 
 
 function Cart() {
@@ -16,7 +17,7 @@ function Cart() {
     const cartContext = useContext(CartContext);
     const [quantity, setQuantity] = useState([]);
     const { cartState, userId, dispatch,isRender,setIsRender } = cartContext;
-    console.log(cartState)
+    const navigate = useNavigate();
     const getAllCart = async () => {
         try {
             const res = await productService.getAllCart(userId);
@@ -29,7 +30,6 @@ function Cart() {
             })
             const initialQuantities = res.data.map(quantity => quantity.quantity);
             setQuantity(initialQuantities);
-            console.log(initialQuantities)
             if (res.status === 200){
                 console.log("Lấy dữ liệu thành công")
             }else {
@@ -92,24 +92,30 @@ function Cart() {
 
     const handlePayment = async () => {
         try {
-            const res = await productService.confirmOrder(userId);
-            if (res.status === 200){
-                dispatch({
-                    type:"SET_CART",
-                    payload: {
-                        carts : []
-                    }
-                })
-                toast("Bạn đã thanh toán thành công");
-                await Swal.fire({
-                    icon: 'success',
-                    title: 'Thanh toán thành công!',
-                    text: 'Cảm ơn bạn đã mua sắm!',
-                    confirmButtonText: 'OK',
-                    showCancelButton: false,
-                    showCloseButton: false,
-                });
-                setIsRender(!isRender);
+            const resCus = await loginService.getCustomer(userId);
+            if (resCus.data.name === "Khách hàng"){
+                navigate("/info")
+                toast("Bạn cần phải cập nhật thông tin khách hàng trước khi thanh toán")
+            }else{
+                const res = await productService.confirmOrder(userId);
+                if (res.status === 200){
+                    dispatch({
+                        type:"SET_CART",
+                        payload: {
+                            carts : []
+                        }
+                    })
+                    toast("Bạn đã thanh toán thành công");
+                    await Swal.fire({
+                        icon: 'success',
+                        title: 'Thanh toán thành công!',
+                        text: 'Cảm ơn bạn đã mua sắm!',
+                        confirmButtonText: 'OK',
+                        showCancelButton: false,
+                        showCloseButton: false,
+                    });
+                    setIsRender(!isRender);
+                }
             }
         }catch (e){
             console.log("lỗi thanh toán")

@@ -1,16 +1,30 @@
 import {PayPalButtons} from "@paypal/react-paypal-js";
-import {useContext, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {CartContext} from "../Context/Context.jsx";
 import * as productService from "../../service/ProductService.jsx"
 import Swal from "sweetalert2";
-
+import * as loginService from "../../service/LoginService.jsx"
+import {useNavigate} from "react-router-dom";
+import {toast} from "react-toastify";
 
 const PaypalCheckoutButton = () => {
     const cartContext = useContext(CartContext);
     const {cartState,userId ,dispatch,isRender, setIsRender} = cartContext;
     const [paidFor, setPaidFor] = useState(false);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
+
     console.log(cartState)
+    const getCustomer =async () => {
+        const res =await loginService.getCustomer(userId);
+        if (res.data.name === "Khách hàng"){
+            navigate("/info")
+            toast("Bạn cần phải cập nhật thông tin khách hàng trước khi thanh toán")
+        }
+    };
+    useEffect(() => {
+        getCustomer();
+    }, []);
 
     const handleApprove = async () => {
         try {
@@ -31,7 +45,9 @@ const PaypalCheckoutButton = () => {
                     showCancelButton: false,
                     showCloseButton: false,
                 });
-            }
+            }else {
+            setPaidFor(true);
+        }
         }catch (e){
             console.log("lỗi paypal")
         }

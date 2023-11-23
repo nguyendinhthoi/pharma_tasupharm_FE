@@ -1,5 +1,4 @@
 import React, {useContext, useEffect, useState} from 'react';
-// import "../css/style.css"
 import {Link, useNavigate} from "react-router-dom";
 import * as loginService from "../../service/LoginService.jsx"
 import * as productService from "../../service/ProductService.jsx"
@@ -25,6 +24,7 @@ function Header() {
         setUserId(user.id);
         try {
             const res = await loginService.getCustomer(user.id);
+            console.log(res)
             if (res.status === 200) {
                 setUserName(res.data.name);
             }
@@ -194,7 +194,7 @@ function Header() {
                                     <Dropdown.Menu>
                                         {userName && (
                                             <>
-                                                <Dropdown.Item as={Link} to={`/infoCustomer/${userId}`}>Thông
+                                                <Dropdown.Item as={Link} to={`/info`}>Thông
                                                     tin</Dropdown.Item>
                                                 <Dropdown.Item onClick={() => {
                                                     handleLogout();
