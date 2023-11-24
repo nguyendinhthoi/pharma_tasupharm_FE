@@ -1286,3 +1286,18 @@ a {
 .t-col-md-12:not(:last-child) {
     margin-bottom: 10px;
 }
+.t-out-of-stock-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 100%; /* Đảm bảo hình ảnh không vượt quá kích thước cha */
+  max-height: 100%;
+}
+.t-top-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px; /* Đặt kích thước mong muốn cho hình */
+  height: 100px; /* Đặt kích thước mong muốn cho hình */
+}

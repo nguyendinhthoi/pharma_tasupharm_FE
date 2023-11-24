@@ -155,11 +155,14 @@ function Cart() {
                                             cartState.cartItem.map((item, index) => (
                                                 <tr key={index}>
                                                     <td className="product-thumbnail">
-                                                        <img
-                                                            src={item.image}
-                                                            alt="Image"
-                                                            className="img-fluid"
-                                                        />
+                                                        <Link to={`/detail/${item.idProduct}`}>
+                                                            <img
+                                                                src={item.image}
+                                                                alt="Image"
+                                                                className="img-fluid"
+                                                            />
+                                                        </Link>
+
                                                     </td>
                                                     <td className="product-name">
                                                         <h2 className="h5 text-black">{item.name}</h2>

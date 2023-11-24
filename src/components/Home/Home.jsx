@@ -54,6 +54,7 @@ function Home() {
                             item : product
                         }
                 })
+            toast("Thêm vào giỏ hàng thành công")
         }
     };
     return (
@@ -138,16 +139,27 @@ function Home() {
                     <div className="row">
                         {bestSellers.map((item, index) => (
                             <div key={index} className="col-sm-6 col-lg-4 text-center t-item mb-4">
-                                <div className="position-relative">
+                                <div className="position-relative ">
                                     <img src={item.image} alt="Image" className="img-fluid" />
+                                    {
+                                        item.quantity <= 0 && (
+                                            <img
+                                                src="https://khogiaydantuonggiare.com/uploads/images/catalogue/hethang.png"
+                                                alt="Hết hàng"
+                                                className="t-out-of-stock-overlay"
+                                            />
+                                        )
+                                    }
                                     <div className="t-icons-overlay">
                                         <Link to={`/detail/${item.id}`} className="t-icon-link">
                                             <BsEye className="t-icon" />
                                         </Link>
-                                        <a className="t-icon-link" role="button"
-                                           onClick={()=> getIntoCart(item)}>
+                                        {item.quantity > 0 &&
+                                            <a className="t-icon-link" role="button"
+                                            onClick={()=> getIntoCart(item)}>
                                             <BsCart className="t-icon"/>
-                                        </a>
+                                            </a>
+                                        }
                                     </div>
                                 </div>
                                 <h3 className="text-dark">
@@ -180,7 +192,7 @@ function Home() {
                     </div>
                     <div className="row mt-5">
                         <div className="col-12 text-center">
-                            <Link  className="btn btn-primary px-4 py-3" to={"/listProduct"}>
+                            <Link  className="btn btn-primary px-4 py-3" to={"/shop"}>
                                 Tất cả sản phẩm
                             </Link>
                         </div>
@@ -219,10 +231,13 @@ function Home() {
                                                             <Link to={`/detail/${item.id}`} className="t-icon-link">
                                                                 <BsEye className="t-icon" />
                                                             </Link>
-                                                            <a className="t-icon-link" role="button"
-                                                               onClick={()=> getIntoCart(item)}>
-                                                                <BsCart className="t-icon"/>
-                                                            </a>
+                                                            {
+                                                                item.quantity > 0 &&
+                                                                <a className="t-icon-link" role="button"
+                                                                   onClick={()=> getIntoCart(item)}>
+                                                                    <BsCart className="t-icon"/>
+                                                                </a>
+                                                            }
                                                         </div>
                                                     </div>
                                                     <div className="text-center mb-5">

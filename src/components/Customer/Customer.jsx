@@ -190,8 +190,8 @@ function Customer() {
                                                         type="text"
                                                         disabled={isDisable}
                                                     >
-                                                    <option value="0">Nam</option>
-                                                    <option value="1">Nữ</option>
+                                                    <option value={0}>Nam</option>
+                                                    <option value={1}>Nữ</option>
                                                     </Field>
                                                 </div>
                                                 <div className="col-4 p-2">

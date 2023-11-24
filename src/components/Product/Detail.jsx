@@ -32,7 +32,6 @@ function Detail() {
     const getProduct = async () => {
         try {
             const res = await productService.getProduct(idProduct);
-            console.log(res)
             if (res.status === 200){
                 setProduct(res.data.product);
                 setImages(res.data.images);
@@ -70,8 +69,8 @@ function Detail() {
     }
     const getIntoCart = (product) => {
         if (!userId){
-            navigate("/login")
             localStorage.setItem("tempURL",window.location.pathname);
+            navigate("/login")
             toast("Bạn phải đăng nhập trước khi thêm vào giỏ hàng")
         }else {
             dispatch({type : 'ADD_TO_CART',
@@ -81,6 +80,8 @@ function Detail() {
                         item : product
                     }
             })
+            toast("Thêm vào giỏ hàng thành công")
+
         }
     };
     return (
@@ -155,12 +156,13 @@ function Detail() {
 
 
                             <p>
-                                <button
-                                    className="btn btn-sm height-auto px-4 py-3 btn-primary"
-                                    onClick={()=> getIntoCart(product)}
-                                >
-                                    Thêm vào giỏ hàng
-                                </button>
+                                        <button
+                                            className="btn btn-sm height-auto px-4 py-3 btn-primary"
+                                            onClick={()=> getIntoCart(product)}
+                                            disabled={product.quantity <= 0}
+                                        >
+                                            {product.quantity > 0 ? "Thêm vào giỏ hàng" : "Hết hàng"}
+                                        </button>
                             </p>
                             <div className="mt-5">
                                 <div>
@@ -258,10 +260,13 @@ function Detail() {
                                                                 <Link to={`/detail/${item.id}`} className="t-icon-link" onClick={getDefaultToDiv}>
                                                                     <BsEye className="t-icon" />
                                                                 </Link>
-                                                                <a className="t-icon-link" role="button"
-                                                                   onClick={()=> getIntoCart(item)}>
-                                                                    <BsCart className="t-icon"/>
-                                                                </a>
+                                                                {
+                                                                    item.quantity > 0 &&
+                                                                    <a className="t-icon-link" role="button"
+                                                                       onClick={()=> getIntoCart(item)}>
+                                                                        <BsCart className="t-icon"/>
+                                                                    </a>
+                                                                }
                                                             </div>
                                                         </div>
                                                         <div className="text-center mb-5">

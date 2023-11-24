@@ -64,6 +64,7 @@ const PaypalCheckoutButton = () => {
     }
 
     return (
+        cartState.cartItem.length > 0 &&
         <PayPalButtons
             style={{
                 color: "silver",

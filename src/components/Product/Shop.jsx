@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Header from "../Header/Header.jsx";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BsCart, BsEye } from "react-icons/bs";
 import ReactPaginate from "react-paginate";
 import Footer from "../Footer/Footer.jsx";
@@ -55,6 +55,7 @@ function Shop() {
                     item: product,
                 },
             });
+            toast("Thêm vào giỏ hàng thành công")
         }
     };
 
@@ -108,7 +109,7 @@ function Shop() {
                     </div>
                 </div>
             </div>
-            <div className="container d-flex justify-content-between">
+            <div className="container d-flex justify-content-between mt-lg-5">
                 <div>
                     <p>Chọn khoảng giá: Từ <b>{value[0].toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</b> đến <b>{value[1].toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</b></p>
                     <Box sx={{ width: 300 }}>
@@ -158,9 +159,13 @@ function Shop() {
                                                     <Link to={`/detail/${item.id}`} className="t-icon-link">
                                                         <BsEye className="t-icon" />
                                                     </Link>
-                                                    <a className="t-icon-link" role="button" onClick={() => getIntoCart(item)}>
-                                                        <BsCart className="t-icon" />
-                                                    </a>
+                                                    {
+                                                        item.quantity > 0 &&
+                                                        <a className="t-icon-link" role="button" onClick={() => getIntoCart(item)}>
+                                                            <BsCart className="t-icon" />
+                                                        </a>
+                                                    }
+
                                                 </div>
                                             </div>
                                             <h3 className="text-dark">

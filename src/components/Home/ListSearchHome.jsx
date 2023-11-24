@@ -53,6 +53,7 @@ function ListSearchHome() {
                         idProduct : id
                     }
             })
+            toast("Thêm vào giỏ hàng thành công")
         }
     };
     const handleScrollToDiv = () => {
@@ -93,10 +94,14 @@ function ListSearchHome() {
                                     <Link to={`/detail/${item.id}`} className="t-icon-link">
                                         <BsEye className="t-icon" />
                                     </Link>
-                                    <a className="t-icon-link" role="button"
-                                       onClick={()=> getIntoCart(item.id)}>
-                                        <BsCart className="t-icon"/>
-                                    </a>
+                                    {
+                                        item.quantity > 0 &&
+                                        <a className="t-icon-link" role="button"
+                                           onClick={()=> getIntoCart(item.id)}>
+                                            <BsCart className="t-icon"/>
+                                        </a>
+                                    }
+
                                 </div>
                             </div>
                             <h3 className="text-dark">

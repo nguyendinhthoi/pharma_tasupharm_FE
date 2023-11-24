@@ -56,6 +56,8 @@ function Categories() {
                     item: product,
                 },
             });
+            toast("Thêm vào giỏ hàng thành công")
+
         }
     };
 
@@ -117,7 +119,7 @@ function Categories() {
                     </div>
                 </div>
             </div>
-            <div className="container d-flex justify-content-between">
+            <div className="container d-flex justify-content-between mt-lg-5">
                 <div>
                     <p>Chọn khoảng giá: Từ <b>{value[0].toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</b> đến <b>{value[1].toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</b></p>
                     <Box sx={{ width: 300 }}>
@@ -167,9 +169,13 @@ function Categories() {
                                                     <Link to={`/detail/${item.id}`} className="t-icon-link">
                                                         <BsEye className="t-icon" />
                                                     </Link>
-                                                    <a className="t-icon-link" role="button" onClick={() => getIntoCart(item)}>
-                                                        <BsCart className="t-icon" />
-                                                    </a>
+                                                    {
+                                                        item.quantity > 0 &&
+                                                        <a className="t-icon-link" role="button" onClick={() => getIntoCart(item)}>
+                                                            <BsCart className="t-icon" />
+                                                        </a>
+                                                    }
+
                                                 </div>
                                             </div>
                                             <h3 className="text-dark">
